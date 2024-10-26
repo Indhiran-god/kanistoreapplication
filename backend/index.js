@@ -1,43 +1,53 @@
-// Import necessary modules
+// Import required modules
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
-const connectDB = require('./config/db'); // Ensure your database connection is configured
-const router = require('./routes'); // Ensure routes are correctly set up in './routes'
+const connectDB = require('./config/db');
+const router = require('./routes');
 
-// Initialize the Express app
 const app = express();
 
-// Middleware to handle CORS, JSON, and cookies
+// Define allowed origins
+const allowedOrigins = ['https://administrato-indhiran-gods-projects.vercel.app',
+    'https://administrator-im.vercel.app'];
+
+// CORS configuration
 app.use(cors({
-    origin: ['https://kanistoreapplication.vercel.app','https://kanistoreapplication-2u6wbjj2w-indhiran-gods-projects.vercel.app'],
+    origin: allowedOrigins,  // Allow your frontend URL
+    credentials: true,       // Allow credentials like cookies
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
 
-app.use(express.json()); // Parse incoming JSON requests
-app.use(cookieParser()); // Parse cookies from requests
+// Middleware
+app.use(cookieParser());
+app.use(express.json());
 
-// Use the router for API routes
-app.use("/api", router);
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!'); // Send a generic error message
+// Set a response timeout
+app.use((req, res, next) => {
+    res.setTimeout(30000, () => {  // 30 seconds timeout
+        console.log('Request has timed out.');
+        res.sendStatus(408);  // Send a 408 Request Timeout status code
+    });
+    next();
 });
 
-// Set the port to either the environment variable or 8080
-const PORT = process.env.PORT || 8080;
+// Handle CORS preflight requests across all routes
+app.options('*', cors());  // Preflight for all routes
 
-// Connect to the database and start the server
+// API Routes
+app.use("/api", router);
+
+// Set port for Vercel environment
+const PORT = process.env.PORT || 8080; // Use PORT from environment variable or default to 8080
+
+// Start server and connect to DB
 connectDB().then(() => {
     app.listen(PORT, () => {
         console.log("Connected to DB");
         console.log(`Server is running on port ${PORT}`);
     });
-}).catch((error) => {
-    console.error("Failed to connect to DB:", error);
+}).catch(err => {
+    console.error("Database connection failed:", err.message);
 });
