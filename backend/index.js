@@ -11,7 +11,7 @@ const app = express();
 
 // Middleware to handle CORS, JSON, and cookies
 app.use(cors({
-    origin: ['https://kanistoreapplication.vercel.app'],
+    origin: ['https://kanistoreapplication.vercel.app','https://kanistoreapplication-2u6wbjj2w-indhiran-gods-projects.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
