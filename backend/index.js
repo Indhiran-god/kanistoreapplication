@@ -9,7 +9,7 @@ const router = require('./routes');
 const app = express();
 
 // Define allowed origins
-const allowedOrigins = ['https://kanistoreapplication-jhbqawst8-indhiran-gods-projects.vercel.app',
+const allowedOrigins = ['https://kanistoreapplication-awh333ohb-indhiran-gods-projects.vercel.app',
     'https://kanistoreapplication.vercel.app'];
 
 // CORS configuration
