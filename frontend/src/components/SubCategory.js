@@ -90,15 +90,15 @@ const SubCategory = () => {
           {data.subCategories.map((sub) => (
             <div
               key={sub._id}
-              className="flex flex-col items-center border p-4 rounded shadow cursor-pointer"
+              className="flex flex-col items-center border p-2 rounded shadow cursor-pointer" // Reduced padding
               onClick={() => handleSubcategoryClick(sub)}
             >
-              <h1 className='flex-grow font-bold text-lg text-center'>
+              <h1 className='flex-grow font-bold text-sm text-center'> {/* Reduced font size */}
                 {sub?.image && Array.isArray(sub.image) && sub.image.length > 0 ? (
                   <img
                     src={sub.image[0]}
                     alt={sub.name || 'Unnamed Subcategory'}
-                    className='w-full h-auto rounded mb-2'
+                    className='w-full max-h-24 object-cover rounded mb-2' // Set max height
                     onError={(e) => {
                       e.target.onerror = null;
                       console.log('Primary image failed to load, using fallback image.');
@@ -107,7 +107,7 @@ const SubCategory = () => {
                     onLoad={() => console.log(`Loaded image from: ${sub.image[0]}`)}
                   />
                 ) : (
-                  <div className='w-full h-auto rounded mb-2 bg-gray-300 flex justify-center items-center'>
+                  <div className='w-full h-24 rounded mb-2 bg-gray-300 flex justify-center items-center'>
                     No Image
                   </div>
                 )}
@@ -179,6 +179,7 @@ const SubCategory = () => {
                   </div>
                 </div>
               ))}
+
             </div>
           ) : (
             <p>No products found for this subcategory.</p>
