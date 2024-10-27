@@ -7,7 +7,7 @@ const subCategorySchema = new mongoose.Schema({
     required: true // Subcategory name is required
   },
   image: {
-    type: String, // Store image URL/path
+    type: [String], // Store image URL/path
     required: true // Optional field for subcategory image
   }
 });
