@@ -30,8 +30,15 @@ const Home = () => {
           const uniqueCategories = Array.from(new Set(response.data.data.map(c => c.name)))
             .map(name => response.data.data.find(c => c.name === name));
 
-          console.log("Unique categories before setting state:", uniqueCategories); // Log unique categories
-          setCategories(uniqueCategories); // Set unique categories
+          // Sort categories so that 'Offers' appears first
+          const sortedCategories = uniqueCategories.sort((a, b) => {
+            if (a.name === 'Offers') return -1; // 'Offers' should come first
+            if (b.name === 'Offers') return 1;  // 'Offers' should come first
+            return 0; // Maintain the order for other categories
+          });
+
+          console.log("Sorted unique categories before setting state:", sortedCategories); // Log sorted categories
+          setCategories(sortedCategories); // Set sorted categories
         } else {
           console.error("Categories is not an array:", response.data);
           setCategories([]); // Set to empty array if not an array
@@ -51,6 +58,7 @@ const Home = () => {
 
   // Map category names to images
   const categoryImages = {
+    'Offers': category8Image,
     'மளஂளிகை பொருட்கள்': category1Image,
     'வீட்டு உபயோக பொருட்கள்': category2Image,
     'அழகு சாதன பொருட்கள்': category3Image,
@@ -58,7 +66,6 @@ const Home = () => {
     'பூஜை பொருட்கள்': category5Image,
     'சிறுதானிய பொருட்கள்': category6Image,
     'எண்ணெய்': category7Image,
-    'Offers': category8Image,
   };
 
   return (
