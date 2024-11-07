@@ -13,6 +13,7 @@ const SubCategory = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedQuantity, setSelectedQuantity] = useState(""); // State for selected quantity
 
   const fetchSubCategories = async () => {
     setLoading(true);
@@ -20,7 +21,6 @@ const SubCategory = () => {
     try {
       const response = await fetch(SummaryApi.getSubcategories(categoryName).url);
       const result = await response.json();
-      console.log('Fetched Subcategories:', result); // Log fetched data
       if (response.ok && result.success) {
         setData((prevData) => ({ ...prevData, subCategories: result.data }));
       } else {
@@ -66,16 +66,20 @@ const SubCategory = () => {
     navigate(`/product/${product._id}`);
   };
 
-  const handleAddToCart = (productId, event) => {
+  const handleAddToCart = (productId, quantity, event) => {
     event.stopPropagation(); // Prevents parent click handler
     toast.success('Product added to cart');
-    console.log(`Adding product with ID ${productId} to cart`);
+    console.log(`Adding product with ID ${productId} and quantity ${quantity} to cart`);
   };
 
-  const handleBuyProduct = (productId, event) => {
+  const handleBuyProduct = (productId, quantity, event) => {
     event.stopPropagation(); // Prevents parent click handler
     toast.success('Proceeding to checkout');
     navigate(`/checkout/${productId}`);
+  };
+
+  const handleQuantityChange = (e) => {
+    setSelectedQuantity(e.target.value);
   };
 
   if (loading) return <div>Loading...</div>;
@@ -85,26 +89,25 @@ const SubCategory = () => {
     <div className='p-4'>
       <h2 className='bg-white py-2 px-4 flex justify-between items-center'>{categoryName}</h2>
 
+      {/* Subcategory Listing */}
       {!selectedSubcategory && data.subCategories.length > 0 ? (
         <div className="grid grid-cols-2 gap-4 mt-4">
           {data.subCategories.map((sub) => (
             <div
               key={sub._id}
-              className="flex flex-col items-center border p-2 rounded shadow cursor-pointer" // Reduced padding
+              className="flex flex-col items-center border p-2 rounded shadow cursor-pointer"
               onClick={() => handleSubcategoryClick(sub)}
             >
-              <h1 className='flex-grow font-bold text-sm text-center'> {/* Reduced font size */}
+              <h1 className='flex-grow font-bold text-sm text-center'>
                 {sub?.image && Array.isArray(sub.image) && sub.image.length > 0 ? (
                   <img
                     src={sub.image[0]}
                     alt={sub.name || 'Unnamed Subcategory'}
-                    className='w-full max-h-24 object-cover rounded mb-2' // Set max height
+                    className='w-full max-h-24 object-cover rounded mb-2'
                     onError={(e) => {
                       e.target.onerror = null;
-                      console.log('Primary image failed to load, using fallback image.');
-                      e.target.src = 'fallback-image-url.jpg'; // Your fallback image URL
+                      e.target.src = 'fallback-image-url.jpg'; // Fallback image
                     }}
-                    onLoad={() => console.log(`Loaded image from: ${sub.image[0]}`)}
                   />
                 ) : (
                   <div className='w-full h-24 rounded mb-2 bg-gray-300 flex justify-center items-center'>
@@ -118,6 +121,7 @@ const SubCategory = () => {
         </div>
       ) : null}
 
+      {/* Products in selected Subcategory */}
       {selectedSubcategory && (
         <div className='mt-8'>
           <h3 className='bg-white py-2 px-4 flex justify-between items-center'>
@@ -140,10 +144,8 @@ const SubCategory = () => {
                           alt={product.productName}
                           onError={(e) => {
                             e.target.onerror = null;
-                            console.log('Product image failed to load, using fallback image.');
-                            e.target.src = 'fallback-image-url.jpg'; // Your fallback image URL
+                            e.target.src = 'fallback-image-url.jpg'; // Fallback image
                           }}
-                          onLoad={() => console.log(`Loaded product image from: ${product.productImage[0]}`)}
                         />
                       ) : (
                         <div className='w-full h-full bg-gray-300 flex justify-center items-center'>
@@ -159,27 +161,61 @@ const SubCategory = () => {
                         <span className='text-gray-500 line-through mr-2'>
                           {displayINRCurrency(product.price)}
                         </span>
-                        {displayINRCurrency(product.sellingPrice)}
                       </p>
                     </div>
                   </div>
+
+                  {/* Quantity Dropdown */}
+                  {product.quantityOptions && product.quantityOptions.length > 0 && (
+                    <div className='mt-2'>
+                      <label htmlFor="quantityOptions" className="block text-sm font-semibold">Quantity:</label>
+                      <select
+                        value={selectedQuantity}
+                        onChange={handleQuantityChange}
+                        className="p-2 bg-slate-100 border rounded w-full"
+                      >
+                        <option value="">--Select Quantity--</option>
+                        {product.quantityOptions.map((option, index) => (
+                          <option key={index} value={option.quantity}>
+                            {option.quantity} for {displayINRCurrency(option.price)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {/* Display selected quantity price */}
+                  {selectedQuantity && product.quantityOptions && product.quantityOptions.length > 0 && (
+                    <div className='mt-2'>
+                      {product.quantityOptions.map((option) => {
+                        if (option.quantity === selectedQuantity) {
+                          return (
+                            <p key={option.quantity} className='font-semibold text-green-500'>
+                              Price for {selectedQuantity} items: {displayINRCurrency(option.price)}
+                            </p>
+                          );
+                        }
+                        return null;
+                      })}
+                    </div>
+                  )}
+
                   <div className='flex items-center gap-2 mt-2'>
                     <button
                       className='flex-grow text-sm border border-green-600 rounded px-2 py-1 text-green-600 font-medium hover:bg-green-600 hover:text-white transition-all'
-                      onClick={(e) => handleBuyProduct(product._id, e)}
+                      onClick={(e) => handleBuyProduct(product._id, selectedQuantity, e)}
                     >
                       Buy
                     </button>
                     <button
                       className='flex-grow text-sm border border-green-600 rounded px-2 py-1 flex items-center justify-center bg-green-600 text-white hover:text-green-600 hover:bg-white transition-all'
-                      onClick={(e) => handleAddToCart(product._id, e)}
+                      onClick={(e) => handleAddToCart(product._id, selectedQuantity, e)}
                     >
                       <FontAwesomeIcon icon={faShoppingCart} className='mr-1' />
                     </button>
                   </div>
                 </div>
               ))}
-
             </div>
           ) : (
             <p>No products found for this subcategory.</p>
