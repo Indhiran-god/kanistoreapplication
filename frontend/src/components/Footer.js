@@ -1,33 +1,37 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FaWhatsapp } from 'react-icons/fa';
+import bgImage from '../assets/gbks.jpg';
 
 const Footer = () => {
+  const contactNumber = '9025301089';
+  const whatsappLink = `https://wa.me/${contactNumber}`;
+
   return (
-    <footer className='bg-slate-200 py-4'>
+    <footer
+      className='py-4 bg-cover bg-center text-white'
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
       <div className='text-center font-bold text-lg'>
-        KANI STORES
+      சிவா ஸ்டோர்ஸ் SIVA STORES 
       </div>
       <div className='container mx-auto p-4 flex flex-col items-center justify-center'>
         <p className='text-center font-bold text-lg' title="Premium Quality Products">
-          &copy; 2024 Premium Quality Products. All rights reserved.
+          &copy; Premium Quality Products. All rights reserved.
         </p>
-        <ul className='flex flex-wrap justify-center mt-4'>
-          <li className='mx-2'>
-            <Link to='./pages/terms' className='text-sm text-gray-600 hover:text-gray-900'>
-              Terms of Service
-            </Link>
-          </li>
-          <li className='mx-2'>
-            <Link to='/privacy' className='text-sm text-gray-600 hover:text-gray-900'>
-              Privacy Policy
-            </Link>
-          </li>
-          <li className='mx-2'>
-            <Link to='/contact' className='text-sm text-gray-600 hover:text-gray-900'>
-              Contact Us
-            </Link>
-          </li>
-        </ul>
+        <p className='text-center mt-4'>
+        எங்களை தொடர்பு கொள்வதற்கு: <span className='font-semibold'>{contactNumber}</span>
+        </p>
+        <a
+          href={whatsappLink}
+          target='_blank'
+          rel='noopener noreferrer'
+          className='flex items-center text-gray-200 hover:text-white mt-2'
+          title="Contact us on WhatsApp"
+        >
+          <FaWhatsapp className='mr-2' />
+          <span>WhatsApp: {contactNumber}</span>
+        </a>
       </div>
     </footer>
   );
