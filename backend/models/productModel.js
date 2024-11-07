@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// Define the product schema
+// Define the product schema with quantity-based pricing
 const productSchema = new mongoose.Schema({
     productName: {
         type: String,
@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema({
     },
     brandName: {
         type: String,
-        required: false
+        required: true
     },
     categoryId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -29,12 +29,20 @@ const productSchema = new mongoose.Schema({
     },
     price: {
         type: Number,
-        required: true
+        required: true // Base price
     },
-    sellingPrice: {
-        type: Number,
-        required: true
-    }
+    quantityOptions: [
+        {
+            quantity: {
+                type: String,
+                required: true
+            },
+            price: {
+                type: Number,
+                required: true
+            }
+        }
+    ]
 }, {
     timestamps: true // Automatically create `createdAt` and `updatedAt` fields
 });
