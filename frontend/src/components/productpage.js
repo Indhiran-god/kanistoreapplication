@@ -17,6 +17,7 @@ const ProductPage = () => {
   const [activeImage, setActiveImage] = useState("");
   const [zoomImageCoordinate, setZoomImageCoordinate] = useState({ x: 0, y: 0 });
   const [zoomImage, setZoomImage] = useState(false);
+  const [quantity, setQuantity] = useState(1); // Quantity state
   const { fetchUserAddToCart } = useContext(Context);
 
   // Fetch product details from API
@@ -102,9 +103,9 @@ const ProductPage = () => {
   };
 
   // Handle Add to Cart functionality
-  const handleAddToCart = async (e, productId) => {
+  const handleAddToCart = async (e, productId, quantity) => {
     try {
-      await addToCart(e, productId);
+      await addToCart(e, productId, quantity);
       fetchUserAddToCart(); // Refresh cart
     } catch (err) {
       console.error("Failed to add product to cart:", err);
@@ -112,9 +113,9 @@ const ProductPage = () => {
   };
 
   // Handle Buy Product and navigate to cart
-  const handleBuyProduct = async (e, productId) => {
+  const handleBuyProduct = async (e, productId, quantity) => {
     try {
-      await addToCart(e, productId);
+      await addToCart(e, productId, quantity);
       fetchUserAddToCart(); // Refresh cart
       navigate("/cart");
     } catch (err) {
@@ -183,23 +184,36 @@ const ProductPage = () => {
           <p>{data.brandName}</p>
 
           <p className='mt-4 text-sm text-gray-400'>M.R.P: {displayINRCurrency(data.price)}</p>
-          <p className='text-xl text-green-600 font-semibold'>{displayINRCurrency(data.sellingPrice)}</p>
 
           <p className='text-sm text-gray-500'>{data.description}</p>
+
+          {/* Quantity Dropdown */}
+          <div className="mt-4">
+            <label htmlFor="quantity" className="text-sm font-medium text-gray-600">Quantity</label>
+            <select
+              id="quantity"
+              value={quantity}
+              onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
+              className="mt-2 p-2 border rounded-md text-sm"
+            >
+              {[...Array(10).keys()].map((i) => (
+                <option key={i + 1} value={i + 1}>{i + 1}</option>
+              ))}
+            </select>
+          </div>
 
           <div className='flex gap-4 mt-6'>
             <button
               className='text-sm border border-green-600 rounded px-4 py-2 text-green-600 font-medium hover:bg-green-600 hover:text-white transition-all'
-              onClick={(e) => handleBuyProduct(e, data._id)}
+              onClick={(e) => handleBuyProduct(e, data._id, quantity)}
             >
               Buy
             </button>
             <button
               className='flex items-center justify-center border border-green-600 rounded px-2 py-2 bg-green-600 text-white font-medium hover:text-green-600 hover:bg-white transition-all'
-              onClick={(e) => handleAddToCart(e, data._id)}
+              onClick={(e) => handleAddToCart(e, data._id, quantity)}
             >
               <FontAwesomeIcon icon={faShoppingCart} className='mr-1' />
-          
             </button>
           </div>
         </div>
@@ -215,19 +229,18 @@ const ProductPage = () => {
               <h4 className='mt-2 text-sm font-medium'>{product.productName}</h4>
               <p className='text-sm text-gray-500'>{displayINRCurrency(product.sellingPrice)}</p>
               <div className='flex gap-4 mt-6'>
-              <button
-                className='text-sm border border-green-600 rounded px-4 py-2 text-green-600 font-medium hover:bg-green-600 hover:text-white transition-all'
-                onClick={(e) => handleBuyProduct(e, product._id)}
-              >
-                Buy
-              </button>
-              <button
-                className='flex items-center justify-center border border-green-600 rounded px-2 py-2 bg-green-600 text-white font-medium hover:text-green-600 hover:bg-white transition-all'
-                onClick={(e) => handleAddToCart(e, product._id)}
-              >
-                <FontAwesomeIcon icon={faShoppingCart} className='mr-1' />
-                
-              </button>
+                <button
+                  className='text-sm border border-green-600 rounded px-4 py-2 text-green-600 font-medium hover:bg-green-600 hover:text-white transition-all'
+                  onClick={(e) => handleBuyProduct(e, product._id, 1)}
+                >
+                  Buy
+                </button>
+                <button
+                  className='flex items-center justify-center border border-green-600 rounded px-2 py-2 bg-green-600 text-white font-medium hover:text-green-600 hover:bg-white transition-all'
+                  onClick={(e) => handleAddToCart(e, product._id, 1)}
+                >
+                  <FontAwesomeIcon icon={faShoppingCart} className='mr-1' />
+                </button>
               </div>
             </div>
           ))}
