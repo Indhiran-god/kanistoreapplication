@@ -17,7 +17,7 @@ const ProductPage = () => {
   const [activeImage, setActiveImage] = useState("");
   const [zoomImageCoordinate, setZoomImageCoordinate] = useState({ x: 0, y: 0 });
   const [zoomImage, setZoomImage] = useState(false);
-  const [quantity, setQuantity] = useState(1); // Quantity state
+  const [selectedQuantity, setSelectedQuantity] = useState(""); // For tracking selected quantity option
   const { fetchUserAddToCart } = useContext(Context);
 
   // Fetch product details from API
@@ -128,6 +128,14 @@ const ProductPage = () => {
     setActiveImage(imageURL);
   };
 
+  // Handle quantity option change
+  const handleQuantityChange = (e) => {
+    setSelectedQuantity(e.target.value);
+  };
+
+  // Get the selected quantity price
+  const selectedOption = data?.quantityOptions?.find(option => option.quantity === selectedQuantity);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -188,30 +196,44 @@ const ProductPage = () => {
           <p className='text-sm text-gray-500'>{data.description}</p>
 
           {/* Quantity Dropdown */}
-          <div className="mt-4">
-            <label htmlFor="quantity" className="text-sm font-medium text-gray-600">Quantity</label>
-            <select
-              id="quantity"
-              value={quantity}
-              onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
-              className="mt-2 p-2 border rounded-md text-sm"
-            >
-              {[...Array(10).keys()].map((i) => (
-                <option key={i + 1} value={i + 1}>{i + 1}</option>
-              ))}
-            </select>
-          </div>
+          {data.quantityOptions && data.quantityOptions.length > 0 && (
+            <div className="mt-4">
+              <label htmlFor="quantityOptions" className="text-sm font-medium text-gray-600">Quantity</label>
+              <select
+                id="quantityOptions"
+                value={selectedQuantity}
+                onChange={handleQuantityChange}
+                className="mt-2 p-2 bg-slate-100 border rounded-md text-sm"
+              >
+                <option value="">--Select Quantity--</option>
+                {data.quantityOptions.map((option, index) => (
+                  <option key={index} value={option.quantity}>
+                    {option.quantity} for {displayINRCurrency(option.price)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Display price for selected quantity */}
+          {selectedQuantity && selectedOption && (
+            <div className="mt-2">
+              <p className="font-semibold text-green-500">
+                Price for {selectedQuantity} items: {displayINRCurrency(selectedOption.price)}
+              </p>
+            </div>
+          )}
 
           <div className='flex gap-4 mt-6'>
             <button
               className='text-sm border border-green-600 rounded px-4 py-2 text-green-600 font-medium hover:bg-green-600 hover:text-white transition-all'
-              onClick={(e) => handleBuyProduct(e, data._id, quantity)}
+              onClick={(e) => handleBuyProduct(e, data._id, selectedQuantity)}
             >
               Buy
             </button>
             <button
               className='flex items-center justify-center border border-green-600 rounded px-2 py-2 bg-green-600 text-white font-medium hover:text-green-600 hover:bg-white transition-all'
-              onClick={(e) => handleAddToCart(e, data._id, quantity)}
+              onClick={(e) => handleAddToCart(e, data._id, selectedQuantity)}
             >
               <FontAwesomeIcon icon={faShoppingCart} className='mr-1' />
             </button>
