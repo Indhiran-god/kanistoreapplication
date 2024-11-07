@@ -13,7 +13,7 @@ const Footer = () => {
       style={{ backgroundImage: `url(${bgImage})` }}
     >
       <div className='text-center font-bold text-lg'>
-      சிவா ஸ்டோர்ஸ் SIVA STORES 
+      சிவா ஸ்டோர்ஸ் 
       </div>
       <div className='container mx-auto p-4 flex flex-col items-center justify-center'>
         <p className='text-center font-bold text-lg' title="Premium Quality Products">
