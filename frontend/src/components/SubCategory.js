@@ -67,13 +67,13 @@ const SubCategory = () => {
   };
 
   const handleAddToCart = (productId, quantity, event) => {
-    event.stopPropagation(); // Prevents parent click handler
+    event.stopPropagation(); // Prevents parent click handler (redirect to product page)
     toast.success('Product added to cart');
     console.log(`Adding product with ID ${productId} and quantity ${quantity} to cart`);
   };
 
   const handleBuyProduct = (productId, quantity, event) => {
-    event.stopPropagation(); // Prevents parent click handler
+    event.stopPropagation(); // Prevents parent click handler (redirect to product page)
     toast.success('Proceeding to checkout');
     navigate(`/checkout/${productId}`);
   };
@@ -132,11 +132,14 @@ const SubCategory = () => {
               {data.products.map((product) => (
                 <div
                   key={product._id}
-                  className="bg-white p-4 rounded shadow cursor-pointer"
-                  onClick={() => handleProductClick(product)}
+                  className="bg-white p-4 rounded shadow"
                 >
                   <div className='w-full'>
-                    <div className='w-full h-32 flex justify-center items-center'>
+                    {/* Product Image Clickable for Navigation */}
+                    <div
+                      className='w-full h-32 flex justify-center items-center cursor-pointer'
+                      onClick={() => handleProductClick(product)} // Redirect on image click
+                    >
                       {product?.productImage && Array.isArray(product.productImage) && product.productImage.length > 0 ? (
                         <img
                           src={product.productImage[0]}
