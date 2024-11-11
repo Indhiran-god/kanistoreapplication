@@ -185,11 +185,6 @@ const PersonDetails = () => {
       <div className="flex-grow overflow-auto">
         {/* Other content or additional sections */}
       </div>
-
-      {/* Footer section */}
-      <footer className="bg-gray-800 text-white p-4 text-center">
-        <p>&copy; 2024 Your Company. All Rights Reserved.</p>
-      </footer>
     </div>
   );
 };
