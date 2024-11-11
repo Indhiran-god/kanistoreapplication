@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { HiSearch } from 'react-icons/hi';
-import { FaUserCircle } from 'react-icons/fa';
-
+import { FaUserCircle, FaWhatsapp } from 'react-icons/fa';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import SummaryApi from '../common';
@@ -89,8 +88,19 @@ const Header = () => {
           <Link to="/">
             <Logo w={90} h={50} />
           </Link>
+          <a
+            href="https://wa.me/9025301089"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-green-500 text-2xl ml-4"
+            aria-label="Chat on WhatsApp"
+          >
+            <FaWhatsapp />
+          </a>
         </div>
 
+        {/* The rest of the Header component remains unchanged */}
+        
         <div className="flex lg:hidden items-center">
           <button onClick={() => setSearchVisible(!searchVisible)} className="text-lg" aria-label="Toggle search">
             <HiSearch />
