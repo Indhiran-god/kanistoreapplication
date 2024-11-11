@@ -8,13 +8,11 @@ import SummaryApi from '../common';
 import { toast } from 'react-toastify';
 import { setUserDetails } from '../store/userSlice';
 import ROLE from '../common/role';
-import context from '../context';
 import Logo from './Logo';
 
 const Header = () => {
   const user = useSelector((state) => state?.user?.user);
   const dispatch = useDispatch();
-  const [menuDisplay, setMenuDisplay] = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -49,7 +47,6 @@ const Header = () => {
       if (data.success) {
         toast.success(data.message);
         dispatch(setUserDetails(null));
-        setMenuDisplay(false);
         navigate('/login');
       } else {
         toast.error(data.message || 'Logout failed');
@@ -140,41 +137,30 @@ const Header = () => {
           </div>
         </div>
 
-        <div className="relative flex justify-center items-center">
-          <div className="flex items-center gap-7">
-            {user?._id && (
-              <div className="text-3xl cursor-pointer menu-container relative" aria-label="User profile" onClick={() => setMenuDisplay((prev) => !prev)}>
-                {user?.profilePic ? (
-                  <img src={user.profilePic || 'https://via.placeholder.com/150'} className="w-10 h-10 rounded-full object-cover" alt={user?.name || 'User'} />
-                ) : (
-                  <FaUserCircle />
-                )}
-                {menuDisplay && (
-                  <div className="absolute bg-white top-full mt-2 right-0 h-fit p-2 shadow-lg rounded z-50">
-                    <nav>
-                      {user.role === ROLE.GENERAL && (
-                        <Link to="/user-details" className="whitespace-nowrap hover:bg-slate-100 p-2 block" onClick={() => setMenuDisplay(false)}>
-                          View Profile
-                        </Link>
-                      )}
-                      <Link to="/orders" className="whitespace-nowrap hover:bg-slate-100 p-2 block" onClick={() => setMenuDisplay(false)}>
-                        My Orders
-                      </Link>
-                      <button className="whitespace-nowrap hover:bg-slate-100 p-2 block w-full text-left" onClick={handleLogout}>
-                        Logout
-                      </button>
-                    </nav>
-                  </div>
-                )}
-              </div>
-            )}
-            
-            {user?._id ? (
-              <button onClick={handleLogout} className="px-3 py-1 rounded-full text-white bg-green-500 hover:bg-green-700">Logout</button>
-            ) : (
-              <Link to="/login" className="px-3 py-1 rounded-full text-white bg-green-500 hover:bg-green-700">Login</Link>
-            )}
-          </div>
+        <div className="flex items-center gap-7">
+          {user?._id && (
+            <Link to="/user-details" className="text-3xl cursor-pointer" aria-label="User profile">
+              {user.profilePic ? (
+                <img
+                  src={user.profilePic}
+                  className="w-10 h-10 rounded-full object-cover"
+                  alt={user.name || 'User'}
+                />
+              ) : (
+                <FaUserCircle />
+              )}
+            </Link>
+          )}
+
+          {user?._id ? (
+            <button onClick={handleLogout} className="px-3 py-1 rounded-full text-white bg-green-500 hover:bg-green-700">
+              Logout
+            </button>
+          ) : (
+            <Link to="/login" className="px-3 py-1 rounded-full text-white bg-green-500 hover:bg-green-700">
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </header>
