@@ -1,96 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import Outlet
+import { useNavigate } from 'react-router-dom';
+import { FaWhatsapp } from 'react-icons/fa';
 import axios from 'axios';
 import SummaryApi from '../common'; // Adjust the path as necessary
-
-// Import category images
-import category1Image from '../assets/groceries.jpeg';
-import category2Image from '../assets/home-products.jpg';
-import category3Image from '../assets/cosmetics.jpeg';
-import category4Image from '../assets/food-items.jpeg';
-import category5Image from '../assets/pooja-items.jpeg';
-import category6Image from '../assets/millets.jpg';
-import category7Image from '../assets/cold-pressed-oil.jpg';
-import category8Image from '../assets/offers.jpeg';
+import bgImage from '../assets/gbks.jpg';
 
 const Home = () => {
-  const navigate = useNavigate();
-  const [categories, setCategories] = useState([]); // Initialize categories as an empty array
-
-  // Fetch categories from API
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get(SummaryApi.Category.url);
-        console.log("Fetched categories:", response.data); // Log the API response
-
-        // Check if the response contains the 'data' property
-        if (response.data && Array.isArray(response.data.data)) {
-          // Create unique categories based on their names
-          const uniqueCategories = Array.from(new Set(response.data.data.map(c => c.name)))
-            .map(name => response.data.data.find(c => c.name === name));
-
-          // Sort categories so that 'Offers' appears first
-          const sortedCategories = uniqueCategories.sort((a, b) => {
-            if (a.name === 'Offers') return -1; // 'Offers' should come first
-            if (b.name === 'Offers') return 1;  // 'Offers' should come first
-            return 0; // Maintain the order for other categories
-          });
-
-          console.log("Sorted unique categories before setting state:", sortedCategories); // Log sorted categories
-          setCategories(sortedCategories); // Set sorted categories
-        } else {
-          console.error("Categories is not an array:", response.data);
-          setCategories([]); // Set to empty array if not an array
-        }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  const handleCategoryClick = (categoryName) => {
-    console.log("Navigating to subcategory of:", categoryName);
-    navigate(`/category/${categoryName}`); // Navigate to the subcategory route
-  };
-
-  // Map category names to images
-  const categoryImages = {
-    'Offers': category8Image,
-    'மளஂளிகை பொருட்கள்': category1Image,
-    'வீட்டு உபயோக பொருட்கள்': category2Image,
-    'அழகு சாதன பொருட்கள்': category3Image,
-    'உணவு பொருட்கள்': category4Image,
-    'பூஜை பொருட்கள்': category5Image,
-    'சிறுதானிய பொருட்கள்': category6Image,
-    'எண்ணெய்': category7Image,
-  };
-
   return (
     <div>
-      <div className="grid grid-cols-2 gap-4 p-4">
-        {Array.isArray(categories) && categories.length > 0 ? (
-          categories.map((category) => (
-            <div
-              key={category._id} // Use the unique category ID as the key
-              className="flex flex-col items-center cursor-pointer border-2 border-gray-300 rounded-md shadow-md p-4 transition-transform transform hover:scale-105"
-              onClick={() => handleCategoryClick(category.name)}
-            >
-              <img
-                src={categoryImages[category.name] || category1Image} // Use image from mapping or fallback
-                alt={category.name}
-                className="w-full h-40 object-cover rounded-md mb-2"
-              />
-              <h3 className="text-center text-lg font-semibold">{category.name}</h3>
-            </div>
-          ))
-        ) : (
-          <p>No categories available</p> // Fallback if categories is empty
-        )}
+      {/* Store Name and Contact Section */}
+      <div
+        className='bg-cover bg-center text-white py-8 text-center'
+        style={{ backgroundImage: `url(${bgImage})` }}
+      >
+        <div className='font-bold text-2xl mb-4'>சிவா ஸ்டோர்ஸ்</div>
+        <p className='text-lg font-semibold'>Contact Us: 9025301089</p>
+        <a
+          href={`https://wa.me/9025301089`}
+          target='_blank'
+          rel='noopener noreferrer'
+          className='inline-flex items-center text-gray-200 hover:text-white mt-2'
+          title="Contact us on WhatsApp"
+        >
+          <FaWhatsapp className='mr-2' />
+          <span>WhatsApp: 9025301089</span>
+        </a>
+        <div className='text-sm mt-8 pt-4'>&copy; 2024 Siva Stores. All rights reserved. Premium Quality Products.</div>
       </div>
-      {/* This will render nested routes if any */}
     </div>
   );
 };
