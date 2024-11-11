@@ -7,6 +7,7 @@ const Categ = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
 
+  
   useEffect(() => {
     const fetchCategories = async () => {
       try {
