@@ -4,7 +4,6 @@ import { setUserDetails } from '../store/userSlice'; // Adjust the import accord
 import SummaryApi from '../common'; // Ensure you have the API methods for fetching/updating user details
 import { toast } from 'react-toastify';
 
-
 const PersonDetails = () => {
   const user = useSelector((state) => state.user.user); // Get user details from Redux store
   const dispatch = useDispatch();
@@ -65,106 +64,122 @@ const PersonDetails = () => {
     }
   };
 
+  const handleCancelEdit = () => {
+    setEditedUser({
+      name: user.name,
+      profilePic: user.profilePic,
+      address: user.address || {}, // Reset to original user details
+    });
+    setIsEditing(false);
+  };
+
   if (!user) {
     return <div>Loading...</div>; // Show loading state if user data is not yet available
   }
 
   return (
-    <div className='bg-white py-2 px-4 flex justify-between items-center'>
-    <h2 className='font-bold text-lg'>User details</h2> 
-       </div>
-        <img
-          src={user.profilePic}
-          alt={user.name || 'User'}
-          className="w-24 h-24 rounded-full mb-4"
-        />
-        <div>
-          <strong>Name:</strong> {isEditing ? (
+    <div className="bg-white py-2 px-4">
+      <h2 className="font-bold text-lg mb-4">User details</h2>
+      <img
+        src={user.profilePic}
+        alt={user.name || 'User'}
+        className="w-24 h-24 rounded-full mb-4"
+      />
+      <div>
+        <strong>Name:</strong>
+        {isEditing ? (
+          <input
+            type="text"
+            name="name"
+            value={editedUser.name}
+            onChange={handleChange}
+            className="border border-gray-300 p-2 rounded w-full mb-2"
+          />
+        ) : (
+          user.name
+        )}
+      </div>
+      <div>
+        <strong>Email:</strong> {user.email}
+      </div>
+      <div>
+        <strong>Phone Number:</strong> {user.phoneNo}
+      </div>
+      <div>
+        <strong>Address:</strong>
+        {isEditing ? (
+          <>
             <input
               type="text"
-              name="name"
-              value={editedUser.name}
-              onChange={handleChange}
-              className="border border-gray-300 p-2 rounded"
+              name="street"
+              placeholder="Street"
+              value={editedUser.address.street || ''}
+              onChange={handleAddressChange}
+              className="border border-gray-300 p-2 rounded w-full mb-2"
             />
-          ) : (
-            user.name
-          )}
-        </div>
-        <div>
-          <strong>Email:</strong> {user.email} {/* Display email as plain text */}
-        </div>
-        <div>
-          <strong>Phone Number:</strong> {user.phoneNo} {/* Display phone number as plain text */}
-        </div>
-        <div>
-          <strong>Address:</strong>
-          {isEditing ? (
-            <>
-              <input
-                type="text"
-                name="street"
-                placeholder="Street"
-                value={editedUser.address.street || ''} // Use empty string if undefined
-                onChange={handleAddressChange}
-                className="border border-gray-300 p-2 rounded w-full mb-2"
-              />
-              <input
-                type="text"
-                name="city"
-                placeholder="City"
-                value={editedUser.address.city || ''}
-                onChange={handleAddressChange}
-                className="border border-gray-300 p-2 rounded w-full mb-2"
-              />
-              <input
-                type="text"
-                name="state"
-                placeholder="State"
-                value={editedUser.address.state || ''}
-                onChange={handleAddressChange}
-                className="border border-gray-300 p-2 rounded w-full mb-2"
-              />
-              <input
-                type="text"
-                name="postalCode"
-                placeholder="Postal Code"
-                value={editedUser.address.postalCode || ''}
-                onChange={handleAddressChange}
-                className="border border-gray-300 p-2 rounded w-full mb-2"
-              />
-              <input
-                type="text"
-                name="country"
-                placeholder="Country"
-                value={editedUser.address.country || ''}
-                onChange={handleAddressChange}
-                className="border border-gray-300 p-2 rounded w-full mb-2"
-              />
-            </>
-          ) : (
-            <div>
-              {user.address?.street}, {user.address?.city}, {user.address?.state}, {user.address?.postalCode}, {user.address?.country}
-            </div>
-          )}
-        </div>
-        <div className="flex justify-between items-center mt-4">
-          {isEditing ? (
+            <input
+              type="text"
+              name="city"
+              placeholder="City"
+              value={editedUser.address.city || ''}
+              onChange={handleAddressChange}
+              className="border border-gray-300 p-2 rounded w-full mb-2"
+            />
+            <input
+              type="text"
+              name="state"
+              placeholder="State"
+              value={editedUser.address.state || ''}
+              onChange={handleAddressChange}
+              className="border border-gray-300 p-2 rounded w-full mb-2"
+            />
+            <input
+              type="text"
+              name="postalCode"
+              placeholder="Postal Code"
+              value={editedUser.address.postalCode || ''}
+              onChange={handleAddressChange}
+              className="border border-gray-300 p-2 rounded w-full mb-2"
+            />
+            <input
+              type="text"
+              name="country"
+              placeholder="Country"
+              value={editedUser.address.country || ''}
+              onChange={handleAddressChange}
+              className="border border-gray-300 p-2 rounded w-full mb-2"
+            />
+          </>
+        ) : (
+          <div>
+            {user.address?.street}, {user.address?.city}, {user.address?.state}, {user.address?.postalCode}, {user.address?.country}
+          </div>
+        )}
+      </div>
+      <div className="flex justify-between items-center mt-4">
+        {isEditing ? (
+          <>
             <button
               onClick={handleProfileUpdate}
-              className="bg-green-500 text-white px-4 py-2 rounded"
+              className="bg-green-500 text-white px-4 py-2 rounded mr-2"
             >
               Save
             </button>
-          ) : (
             <button
-              onClick={handleEditToggle}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
+              onClick={handleCancelEdit}
+              className="bg-gray-500 text-white px-4 py-2 rounded"
             >
-              Edit
+              Cancel
             </button>
-          )}
-        </div>
+          </>
+        ) : (
+          <button
+            onClick={handleEditToggle}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Edit
+          </button>
+        )}
       </div>
     </div>
   );
