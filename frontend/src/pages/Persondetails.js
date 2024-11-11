@@ -79,25 +79,28 @@ const PersonDetails = () => {
 
   return (
     <div className="bg-white py-2 px-4 min-h-screen flex flex-col">
-      <h2 className="font-bold text-lg mb-4">User details</h2>
+      {/* Header section with Save and Cancel buttons */}
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="font-bold text-lg">User details</h2>
 
-      {/* Save and Cancel buttons above the form */}
-      {isEditing && (
-        <div className="flex justify-between items-center mb-4">
-          <button
-            onClick={handleProfileUpdate}
-            className="bg-green-500 text-white px-4 py-2 rounded"
-          >
-            Save
-          </button>
-          <button
-            onClick={handleCancelEdit}
-            className="bg-gray-500 text-white px-4 py-2 rounded"
-          >
-            Cancel
-          </button>
-        </div>
-      )}
+        {/* Save and Cancel buttons */}
+        {isEditing && (
+          <div className="flex space-x-4">
+            <button
+              onClick={handleProfileUpdate}
+              className="bg-green-500 text-white px-4 py-2 rounded"
+            >
+              Save
+            </button>
+            <button
+              onClick={handleCancelEdit}
+              className="bg-gray-500 text-white px-4 py-2 rounded"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* User profile picture */}
       <img
@@ -185,6 +188,11 @@ const PersonDetails = () => {
       <div className="flex-grow overflow-auto">
         {/* Other content or additional sections */}
       </div>
+
+      {/* Footer section */}
+      <footer className="bg-gray-800 text-white p-4 text-center">
+        <p>&copy; 2024 Your Company. All Rights Reserved.</p>
+      </footer>
     </div>
   );
 };
