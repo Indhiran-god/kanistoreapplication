@@ -4,7 +4,6 @@ import { FaWhatsapp } from 'react-icons/fa';
 import axios from 'axios';
 import SummaryApi from '../common'; // Adjust the path as necessary
 import bgImage from '../assets/gbks.jpg';
-
 const Home = () => {
   return (
     <div>
