@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setUserDetails } from '../store/userSlice'; // Adjust the import according to your structure
-import SummaryApi from '../common'; // Ensure you have the API methods for fetching/updating user details
+import { setUserDetails } from '../store/userSlice';
+import SummaryApi from '../common';
 import { toast } from 'react-toastify';
 
-
 const PersonDetails = () => {
-  const user = useSelector((state) => state.user.user); // Get user details from Redux store
+  const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({
-    address: {}, // Initialize address as an empty object
+    address: {},
   });
 
   useEffect(() => {
@@ -18,7 +17,7 @@ const PersonDetails = () => {
       setEditedUser({
         name: user.name,
         profilePic: user.profilePic,
-        address: user.address || {}, // Use user address if available
+        address: user.address || {},
       });
     }
   }, [user]);
@@ -36,7 +35,7 @@ const PersonDetails = () => {
     const { name, value } = e.target;
     setEditedUser((prev) => ({
       ...prev,
-      address: { ...prev.address, [name]: value }, // Update address fields
+      address: { ...prev.address, [name]: value },
     }));
   };
 
@@ -47,15 +46,15 @@ const PersonDetails = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(editedUser), // Send updated user data, including address
+        body: JSON.stringify(editedUser),
         credentials: 'include',
       });
       const data = await response.json();
 
       if (data.success) {
         toast.success(data.message);
-        dispatch(setUserDetails(data.updatedUser)); // Assuming the API returns the updated user
-        setIsEditing(false); // Exit editing mode
+        dispatch(setUserDetails(data.updatedUser));
+        setIsEditing(false);
       } else {
         toast.error(data.message || 'Update failed');
       }
@@ -66,106 +65,114 @@ const PersonDetails = () => {
   };
 
   if (!user) {
-    return <div>Loading...</div>; // Show loading state if user data is not yet available
+    return <div>Loading...</div>;
   }
 
   return (
-    <div className='bg-white py-2 px-4 flex justify-between items-center'>
-    <h2 className='font-bold text-lg'>User details</h2> 
-       </div>
+    <div className="bg-white py-4 px-6 shadow-md rounded-md max-w-md mx-auto">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="font-bold text-lg">User Details</h2>
+        <button
+          onClick={handleEditToggle}
+          className={`px-4 py-2 rounded ${isEditing ? 'bg-red-500' : 'bg-blue-500'} text-white`}
+        >
+          {isEditing ? 'Cancel' : 'Edit'}
+        </button>
+      </div>
+
+      <div className="flex flex-col items-center">
         <img
           src={user.profilePic}
           alt={user.name || 'User'}
           className="w-24 h-24 rounded-full mb-4"
         />
-        <div>
-          <strong>Name:</strong> {isEditing ? (
+      </div>
+
+      <div className="mb-4">
+        <strong>Name:</strong>{' '}
+        {isEditing ? (
+          <input
+            type="text"
+            name="name"
+            value={editedUser.name}
+            onChange={handleChange}
+            className="border border-gray-300 p-2 rounded w-full"
+          />
+        ) : (
+          user.name
+        )}
+      </div>
+
+      <div className="mb-4">
+        <strong>Email:</strong> {user.email}
+      </div>
+
+      <div className="mb-4">
+        <strong>Phone Number:</strong> {user.phoneNo}
+      </div>
+
+      <div className="mb-4">
+        <strong>Address:</strong>
+        {isEditing ? (
+          <>
             <input
               type="text"
-              name="name"
-              value={editedUser.name}
-              onChange={handleChange}
-              className="border border-gray-300 p-2 rounded"
+              name="street"
+              placeholder="Street"
+              value={editedUser.address.street || ''}
+              onChange={handleAddressChange}
+              className="border border-gray-300 p-2 rounded w-full mb-2"
             />
-          ) : (
-            user.name
-          )}
-        </div>
-        <div>
-          <strong>Email:</strong> {user.email} {/* Display email as plain text */}
-        </div>
-        <div>
-          <strong>Phone Number:</strong> {user.phoneNo} {/* Display phone number as plain text */}
-        </div>
-        <div>
-          <strong>Address:</strong>
-          {isEditing ? (
-            <>
-              <input
-                type="text"
-                name="street"
-                placeholder="Street"
-                value={editedUser.address.street || ''} // Use empty string if undefined
-                onChange={handleAddressChange}
-                className="border border-gray-300 p-2 rounded w-full mb-2"
-              />
-              <input
-                type="text"
-                name="city"
-                placeholder="City"
-                value={editedUser.address.city || ''}
-                onChange={handleAddressChange}
-                className="border border-gray-300 p-2 rounded w-full mb-2"
-              />
-              <input
-                type="text"
-                name="state"
-                placeholder="State"
-                value={editedUser.address.state || ''}
-                onChange={handleAddressChange}
-                className="border border-gray-300 p-2 rounded w-full mb-2"
-              />
-              <input
-                type="text"
-                name="postalCode"
-                placeholder="Postal Code"
-                value={editedUser.address.postalCode || ''}
-                onChange={handleAddressChange}
-                className="border border-gray-300 p-2 rounded w-full mb-2"
-              />
-              <input
-                type="text"
-                name="country"
-                placeholder="Country"
-                value={editedUser.address.country || ''}
-                onChange={handleAddressChange}
-                className="border border-gray-300 p-2 rounded w-full mb-2"
-              />
-            </>
-          ) : (
-            <div>
-              {user.address?.street}, {user.address?.city}, {user.address?.state}, {user.address?.postalCode}, {user.address?.country}
-            </div>
-          )}
-        </div>
-        <div className="flex justify-between items-center mt-4">
-          {isEditing ? (
-            <button
-              onClick={handleProfileUpdate}
-              className="bg-green-500 text-white px-4 py-2 rounded"
-            >
-              Save
-            </button>
-          ) : (
-            <button
-              onClick={handleEditToggle}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Edit
-            </button>
-          )}
-        </div>
+            <input
+              type="text"
+              name="city"
+              placeholder="City"
+              value={editedUser.address.city || ''}
+              onChange={handleAddressChange}
+              className="border border-gray-300 p-2 rounded w-full mb-2"
+            />
+            <input
+              type="text"
+              name="state"
+              placeholder="State"
+              value={editedUser.address.state || ''}
+              onChange={handleAddressChange}
+              className="border border-gray-300 p-2 rounded w-full mb-2"
+            />
+            <input
+              type="text"
+              name="postalCode"
+              placeholder="Postal Code"
+              value={editedUser.address.postalCode || ''}
+              onChange={handleAddressChange}
+              className="border border-gray-300 p-2 rounded w-full mb-2"
+            />
+            <input
+              type="text"
+              name="country"
+              placeholder="Country"
+              value={editedUser.address.country || ''}
+              onChange={handleAddressChange}
+              className="border border-gray-300 p-2 rounded w-full mb-2"
+            />
+          </>
+        ) : (
+          <div>
+            {user.address?.street}, {user.address?.city}, {user.address?.state}, {user.address?.postalCode}, {user.address?.country}
+          </div>
+        )}
       </div>
+
+      {isEditing && (
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={handleProfileUpdate}
+            className="bg-green-500 text-white px-4 py-2 rounded"
+          >
+            Save
+          </button>
+        </div>
+      )}
     </div>
   );
 };
