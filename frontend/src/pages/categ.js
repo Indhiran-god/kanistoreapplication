@@ -38,20 +38,23 @@ const Categ = () => {
   return (
     <div className="grid grid-cols-2 gap-4 p-4 pb-16">
       {Array.isArray(categories) && categories.length > 0 ? (
-        categories.map((category) => (
-          <div
-            key={category._id}
-            className="flex flex-col items-center cursor-pointer border-2 border-gray-300 rounded-md shadow-md p-4 transition-transform transform hover:scale-105"
-            onClick={() => handleCategoryClick(category.name)}
-          >
-            <img
-              src={category.image || 'default-image-url.jpg'} // Use the image URL from the database, fallback to a default image
-              alt={category.name}
-              className="w-full max-w-xs h-28 object-cover rounded-md mb-2" // Adjusted height and max width
-            />
-            <h3 className="text-center text-lg font-semibold">{category.name}</h3>
-          </div>
-        ))
+        categories.map((category) => {
+          console.log('Category Image URL:', category.image);  // Debugging line to check the image URL
+          return (
+            <div
+              key={category._id}
+              className="flex flex-col items-center cursor-pointer border-2 border-gray-300 rounded-md shadow-md p-4 transition-transform transform hover:scale-105"
+              onClick={() => handleCategoryClick(category.name)}
+            >
+              <img
+                src={category.image ? category.image : '/default-image-url.jpg'} // Fix: Check for the image URL
+                alt={category.name}
+                className="w-full max-w-xs h-28 object-cover rounded-md mb-2"
+              />
+              <h3 className="text-center text-lg font-semibold">{category.name}</h3>
+            </div>
+          );
+        })
       ) : (
         <p>No categories available</p>
       )}
