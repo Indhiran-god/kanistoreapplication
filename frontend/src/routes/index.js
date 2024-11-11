@@ -11,6 +11,7 @@ import ProductPage from "../components/productpage";
 import Orders from "../pages/orders";
 import SearchProduct from '../pages/SearchProduct';
 import Categories from "../pages/categ";
+
 const router = createBrowserRouter([
     {
         path: "*", // This will match all paths
