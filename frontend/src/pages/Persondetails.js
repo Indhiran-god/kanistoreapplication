@@ -69,9 +69,9 @@ const PersonDetails = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold">User Details</h1>
-      <div className="my-4">
+    <div className='bg-white py-2 px-4 flex justify-between items-center'>
+    <h2 className='font-bold text-lg'>User details</h2> 
+       </div>
         <img
           src={user.profilePic}
           alt={user.name || 'User'}
