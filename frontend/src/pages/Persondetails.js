@@ -78,14 +78,35 @@ const PersonDetails = () => {
   }
 
   return (
-    <div className="bg-white py-2 px-4">
+    <div className="bg-white py-2 px-4 min-h-screen flex flex-col">
       <h2 className="font-bold text-lg mb-4">User details</h2>
+
+      {/* Save and Cancel buttons above the form */}
+      {isEditing && (
+        <div className="flex justify-between items-center mb-4">
+          <button
+            onClick={handleProfileUpdate}
+            className="bg-green-500 text-white px-4 py-2 rounded"
+          >
+            Save
+          </button>
+          <button
+            onClick={handleCancelEdit}
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+
+      {/* User profile picture */}
       <img
         src={user.profilePic}
         alt={user.name || 'User'}
-        className="w-24 h-24 rounded-full mb-4"
+        className="w-24 h-24 rounded-full mb-4 mx-auto"
       />
-      <div>
+
+      <div className="mb-4">
         <strong>Name:</strong>
         {isEditing ? (
           <input
@@ -99,13 +120,16 @@ const PersonDetails = () => {
           user.name
         )}
       </div>
-      <div>
+
+      <div className="mb-4">
         <strong>Email:</strong> {user.email}
       </div>
-      <div>
+
+      <div className="mb-4">
         <strong>Phone Number:</strong> {user.phoneNo}
       </div>
-      <div>
+
+      <div className="mb-4">
         <strong>Address:</strong>
         {isEditing ? (
           <>
@@ -156,31 +180,16 @@ const PersonDetails = () => {
           </div>
         )}
       </div>
-      <div className="flex justify-between items-center mt-4">
-        {isEditing ? (
-          <>
-            <button
-              onClick={handleProfileUpdate}
-              className="bg-green-500 text-white px-4 py-2 rounded mr-2"
-            >
-              Save
-            </button>
-            <button
-              onClick={handleCancelEdit}
-              className="bg-gray-500 text-white px-4 py-2 rounded"
-            >
-              Cancel
-            </button>
-          </>
-        ) : (
-          <button
-            onClick={handleEditToggle}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            Edit
-          </button>
-        )}
+
+      {/* Scrollable container for content */}
+      <div className="flex-grow overflow-auto">
+        {/* Other content or additional sections */}
       </div>
+
+      {/* Footer section */}
+      <footer className="bg-gray-800 text-white p-4 text-center">
+        <p>&copy; 2024 Your Company. All Rights Reserved.</p>
+      </footer>
     </div>
   );
 };
