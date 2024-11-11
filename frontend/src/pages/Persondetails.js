@@ -4,6 +4,7 @@ import { setUserDetails } from '../store/userSlice'; // Adjust the import accord
 import SummaryApi from '../common'; // Ensure you have the API methods for fetching/updating user details
 import { toast } from 'react-toastify';
 
+
 const PersonDetails = () => {
   const user = useSelector((state) => state.user.user); // Get user details from Redux store
   const dispatch = useDispatch();
