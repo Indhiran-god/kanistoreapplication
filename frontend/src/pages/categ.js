@@ -3,16 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SummaryApi from '../common'; // Adjust the path as necessary
 
-// Import category images
-import category1Image from '../assets/groceries.jpeg';
-import category2Image from '../assets/home-products.jpg';
-import category3Image from '../assets/cosmetics.jpeg';
-import category4Image from '../assets/food-items.jpeg';
-import category5Image from '../assets/pooja-items.jpeg';
-import category6Image from '../assets/millets.jpg';
-import category7Image from '../assets/cold-pressed-oil.jpg';
-import category8Image from '../assets/offers.jpeg';
-
 const Categ = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
@@ -45,17 +35,6 @@ const Categ = () => {
     navigate(`/category/${categoryName}`);
   };
 
-  const categoryImages = {
-    'Offers': category8Image,
-    'மளஂளிகை பொருட்கள்': category1Image,
-    'வீட்டு உபயோக பொருட்கள்': category2Image,
-    'அழகு சாதன பொருட்கள்': category3Image,
-    'உணவு பொருட்கள்': category4Image,
-    'பூஜை பொருட்கள்': category5Image,
-    'சிறுதானிய பொருட்கள்': category6Image,
-    'எண்ணெய்': category7Image,
-  };
-
   return (
     <div className="grid grid-cols-2 gap-4 p-4 pb-16">
       {Array.isArray(categories) && categories.length > 0 ? (
@@ -66,7 +45,7 @@ const Categ = () => {
             onClick={() => handleCategoryClick(category.name)}
           >
             <img
-              src={categoryImages[category.name] || category1Image}
+              src={category.image || 'default-image-url.jpg'} // Use the image URL from the database, fallback to a default image
               alt={category.name}
               className="w-full max-w-xs h-28 object-cover rounded-md mb-2" // Adjusted height and max width
             />
