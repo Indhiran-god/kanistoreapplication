@@ -46,8 +46,8 @@ const Categ = () => {
           // Log category image URL for debugging
           console.log('Category Image URL:', category.image);
 
-          // Construct the full image URL if the image path is not absolute
-          const fullImageUrl = category.image?.startsWith('http') ? category.image : `http://localhost:5000/${category.image}`;
+          // If image URL is relative, append base URL from the API server
+          const fullImageUrl = category.image ? category.image : '/images/default-image-url.jpg';
 
           return (
             <div
@@ -56,7 +56,7 @@ const Categ = () => {
               onClick={() => handleCategoryClick(category.name)}
             >
               <img
-                src={fullImageUrl || '/images/default-image-url.jpg'} // Default image if no image exists
+                src={fullImageUrl} // Use the image URL directly, assuming it's absolute from the API
                 alt={category.name}
                 className="w-full max-w-xs h-28 object-cover rounded-md mb-2"
               />
