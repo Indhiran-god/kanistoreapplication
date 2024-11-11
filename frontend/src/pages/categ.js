@@ -47,7 +47,7 @@ const Categ = () => {
               onClick={() => handleCategoryClick(category.name)}
             >
               <img
-                src={category.image ? category.image : '/default-image-url.jpg'} // Fix: Check for the image URL
+                src={category.image ? `http://yourdomain.com${category.image}` : '/images/default-image-url.jpg'}  // Ensure this is correct
                 alt={category.name}
                 className="w-full max-w-xs h-28 object-cover rounded-md mb-2"
               />
