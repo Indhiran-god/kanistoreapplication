@@ -10,7 +10,6 @@ import { setUserDetails } from '../store/userSlice';
 import ROLE from '../common/role';
 import context from '../context';
 import Logo from './Logo';
-import bgImage from '../assets/gbks.jpg';
 
 const Header = () => {
   const user = useSelector((state) => state?.user?.user);
@@ -86,11 +85,8 @@ const Header = () => {
     setSearchResults([]);
   };
 
-  // Log the user object for debugging
-  console.log("User:", user);
-
   return (
-    <header className="h-16 shadow-md bg-white relative" style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover' }}>
+    <header className="h-16 shadow-md bg-white relative">
       <div className="h-full container mx-auto flex items-center px-4 justify-between">
         <div className="flex items-center">
           <Link to="/">
@@ -172,9 +168,9 @@ const Header = () => {
                 )}
               </div>
             )}
-            <Link to={"/cart"} className="text-2xl relative">
+            <Link to={"/cart"} className="text-2xl relative text-white">
               <PiShoppingCart />
-              <div className="bg-green-500 text-black w-5 h-5 rounded-full p-1 flex items-center justify-center absolute -top-2 -right-3">
+              <div className="bg-white text-black w-5 h-5 rounded-full p-1 flex items-center justify-center absolute -top-2 -right-3 border border-gray-300">
                 <p className="text-sm">{context?.cartProductCount}</p>
               </div>
             </Link>
