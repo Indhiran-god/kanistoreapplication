@@ -9,6 +9,8 @@ import SubCategoryPage from "../components/SubCategory";
 import Cart from '../pages/Cart';
 import ProductPage from "../components/productpage";
 import Orders from "../pages/orders";
+import SearchProduct from '../pages/SearchProduct';
+import Categories from "../pages/categ";
 // Define the router with corrected dynamic routing
 const router = createBrowserRouter([
     {
@@ -32,6 +34,10 @@ const router = createBrowserRouter([
                 element: <Userdetails />
             },
             {
+                path : "search",
+                element : <SearchProduct/>
+            },
+            {
                 path : 'cart', // Cart page path
                 element : <Cart/>
             },
@@ -42,6 +48,10 @@ const router = createBrowserRouter([
             {
                 path: "sign-up", // Sign up path
                 element: <SignUP />
+            },
+            {
+                path: "categories", // Categories page path
+                element: <Categories /> // Categories component
             },
             {
                 path: "sub", // SubCategory page path
