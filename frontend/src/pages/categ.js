@@ -12,13 +12,17 @@ const Categ = () => {
       try {
         const response = await axios.get(SummaryApi.Category.url);
         if (response.data && Array.isArray(response.data.data)) {
+          // Remove duplicate categories by name
           const uniqueCategories = Array.from(new Set(response.data.data.map(c => c.name)))
             .map(name => response.data.data.find(c => c.name === name));
+          
+          // Sort categories and make sure 'Offers' appears first
           const sortedCategories = uniqueCategories.sort((a, b) => {
             if (a.name === 'Offers') return -1;
             if (b.name === 'Offers') return 1;
             return 0;
           });
+          
           setCategories(sortedCategories);
         } else {
           setCategories([]);
@@ -39,7 +43,12 @@ const Categ = () => {
     <div className="grid grid-cols-2 gap-4 p-4 pb-16">
       {Array.isArray(categories) && categories.length > 0 ? (
         categories.map((category) => {
-          console.log('Category Image URL:', category.image);  // Debugging line to check the image URL
+          // Log category image URL for debugging
+          console.log('Category Image URL:', category.image);
+
+          // Construct the full image URL if the image path is not absolute
+          const fullImageUrl = category.image?.startsWith('http') ? category.image : `http://localhost:5000/${category.image}`;
+
           return (
             <div
               key={category._id}
@@ -47,7 +56,7 @@ const Categ = () => {
               onClick={() => handleCategoryClick(category.name)}
             >
               <img
-                src={category.image ? `http://yourdomain.com${category.image}` : '/images/default-image-url.jpg'}  // Ensure this is correct
+                src={fullImageUrl || '/images/default-image-url.jpg'} // Default image if no image exists
                 alt={category.name}
                 className="w-full max-w-xs h-28 object-cover rounded-md mb-2"
               />
