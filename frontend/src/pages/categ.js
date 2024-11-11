@@ -42,28 +42,27 @@ const Categ = () => {
   return (
     <div className="grid grid-cols-2 gap-4 p-4 pb-16">
       {Array.isArray(categories) && categories.length > 0 ? (
-        categories.map((category) => {
-          // Log category image URL for debugging
-          console.log('Category Image URL:', category.image);
-
-          // If image URL is relative, append base URL from the API server
-          const fullImageUrl = category.image ? category.image : '/images/default-image-url.jpg';
-
-          return (
-            <div
-              key={category._id}
-              className="flex flex-col items-center cursor-pointer border-2 border-gray-300 rounded-md shadow-md p-4 transition-transform transform hover:scale-105"
-              onClick={() => handleCategoryClick(category.name)}
-            >
+        categories.map((category) => (
+          <div
+            key={category._id}
+            className="flex flex-col items-center cursor-pointer border-2 border-gray-300 rounded-md shadow-md p-4 transition-transform transform hover:scale-105"
+            onClick={() => handleCategoryClick(category.name)}
+          >
+            {/* Render the image or a placeholder */}
+            {category.image && category.image.length > 0 ? (
               <img
-                src={fullImageUrl} // Use the image URL directly, assuming it's absolute from the API
-                alt={category.name}
+                src={category.image[0]} // Assuming `category.image` is an array and the first item is the image URL
+                alt={category.name || 'Unnamed Category'}
                 className="w-full max-w-xs h-28 object-cover rounded-md mb-2"
               />
-              <h3 className="text-center text-lg font-semibold">{category.name}</h3>
-            </div>
-          );
-        })
+            ) : (
+              <div className="w-full max-w-xs h-28 bg-gray-200 rounded-md mb-2 flex items-center justify-center">
+                <span>No Image</span>
+              </div>
+            )}
+            <h3 className="text-center text-lg font-semibold">{category.name}</h3>
+          </div>
+        ))
       ) : (
         <p>No categories available</p>
       )}
