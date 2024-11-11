@@ -11,7 +11,6 @@ import ProductPage from "../components/productpage";
 import Orders from "../pages/orders";
 import SearchProduct from '../pages/SearchProduct';
 import Categories from "../pages/categ";
-// Define the router with corrected dynamic routing
 const router = createBrowserRouter([
     {
         path: "*", // This will match all paths
