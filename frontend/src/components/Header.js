@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { HiSearch } from 'react-icons/hi';
 import { FaUserCircle } from 'react-icons/fa';
-import { PiShoppingCart } from 'react-icons/pi';
+
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import SummaryApi from '../common';
@@ -168,12 +168,7 @@ const Header = () => {
                 )}
               </div>
             )}
-            <Link to={"/cart"} className="text-2xl relative text-white">
-              <PiShoppingCart />
-              <div className="bg-white text-black w-5 h-5 rounded-full p-1 flex items-center justify-center absolute -top-2 -right-3 border border-gray-300">
-                <p className="text-sm">{context?.cartProductCount}</p>
-              </div>
-            </Link>
+            
             {user?._id ? (
               <button onClick={handleLogout} className="px-3 py-1 rounded-full text-white bg-green-500 hover:bg-green-700">Logout</button>
             ) : (
