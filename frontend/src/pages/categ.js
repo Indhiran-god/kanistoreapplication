@@ -6,6 +6,7 @@ import SummaryApi from '../common'; // Adjust the path as necessary
 const Categ = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
+  
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -39,32 +40,43 @@ const Categ = () => {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-4 p-4 pb-16">
-      {Array.isArray(categories) && categories.length > 0 ? (
-        categories.map((category) => (
-          <div
-            key={category._id}
-            className="flex flex-col items-center cursor-pointer border-2 border-gray-300 rounded-md shadow-md p-4 transition-transform transform hover:scale-105"
-            onClick={() => handleCategoryClick(category.name)}
-          >
-            {/* Render the image or a placeholder */}
-            {category.image && category.image.length > 0 ? (
-              <img
-                src={category.image[0]} // Assuming `category.image` is an array and the first item is the image URL
-                alt={category.name || 'Unnamed Category'}
-                className="w-full max-w-xs h-28 object-cover rounded-md mb-2"
-              />
-            ) : (
-              <div className="w-full max-w-xs h-28 bg-gray-200 rounded-md mb-2 flex items-center justify-center">
-                <span>No Image</span>
-              </div>
-            )}
-            <h3 className="text-center text-lg font-semibold">{category.name}</h3>
-          </div>
-        ))
-      ) : (
-        <p>No categories available</p>
-      )}
+    <div className="p-4 pb-16">
+      {/* Offers box */}
+      <div
+        className="w-full bg-yellow-300 text-center py-4 text-2xl font-bold rounded-md mb-6 cursor-pointer"
+        onClick={() => handleCategoryClick('Offers')}
+      >
+        Offers
+      </div>
+      
+      {/* Categories grid */}
+      <div className="grid grid-cols-3 gap-4">
+        {Array.isArray(categories) && categories.length > 0 ? (
+          categories.map((category) => (
+            <div
+              key={category._id}
+              className="flex flex-col items-center cursor-pointer border-2 border-gray-300 rounded-md shadow-md p-4 transition-transform transform hover:scale-105"
+              onClick={() => handleCategoryClick(category.name)}
+            >
+              {/* Render the image or a placeholder */}
+              {category.image && category.image.length > 0 ? (
+                <img
+                  src={category.image[0]} // Assuming `category.image` is an array and the first item is the image URL
+                  alt={category.name || 'Unnamed Category'}
+                  className="w-full max-w-xs h-28 object-cover rounded-md mb-2"
+                />
+              ) : (
+                <div className="w-full max-w-xs h-28 bg-gray-200 rounded-md mb-2 flex items-center justify-center">
+                  <span>No Image</span>
+                </div>
+              )}
+              <h3 className="text-center text-lg font-semibold">{category.name}</h3>
+            </div>
+          ))
+        ) : (
+          <p>No categories available</p>
+        )}
+      </div>
     </div>
   );
 };
