@@ -1,31 +1,35 @@
 const mongoose = require('mongoose');
 
-// Define the subcategory schema
-const subCategorySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true // Subcategory name is required
-  },
-  image: {
-    type: [String], // Store image URL/path
-    required: true // Optional field for subcategory image
-  }
+const subcategorySchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    images: {
+        type: [String], // Assuming images are stored as an array of strings
+        required: true // Ensure this is set to true if image is mandatory
+    },
+    categoryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Category' // Reference to the Category model
+    }
 });
 
-// Define the category schema
 const categorySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    unique: true // Ensure that category names are unique
-  },
-  subCategories: {
-    type: [subCategorySchema], // Array of subcategories
-    default: [] // Default to an empty array
-  }
+    name: {
+        type: String,
+        required: true
+    },
+    categoryImage: {
+        type: [String], // Assuming images are stored as an array of strings
+        required: true // This is now correctly closed with a comma
+    },
+    subCategories: {
+        type: [subcategorySchema],
+        required: true // Ensure this is set to true if subcategories are mandatory
+    }
 });
 
-// Create and export the model
 const Category = mongoose.model('Category', categorySchema);
-
 module.exports = Category;
