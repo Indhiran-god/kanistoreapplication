@@ -7,6 +7,7 @@ const Categ = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [offersImage, setOffersImage] = useState(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -24,6 +25,14 @@ const Categ = () => {
             if (b.name === 'Offers') return 1;
             return a.name.localeCompare(b.name);
           });
+
+          // Set Offers Image if available
+          const offersCategory = sortedCategories.find(
+            (category) => category.name === 'Offers'
+          );
+          if (offersCategory && offersCategory.categoryImage?.length > 0) {
+            setOffersImage(offersCategory.categoryImage[0]); // Get the first image
+          }
 
           setCategories(sortedCategories);
           console.log('Categories:', sortedCategories);
@@ -50,47 +59,61 @@ const Categ = () => {
 
   return (
     <div className="p-4 pb-16">
+      {/* Highlighted Offers Section */}
       <div
-        className="w-full bg-yellow-300 text-center py-4 text-2xl font-bold rounded-md mb-6 cursor-pointer"
+        className="w-full bg-yellow-300 text-center py-4 text-2xl font-bold rounded-md mb-6 cursor-pointer flex flex-col items-center"
         onClick={() => handleCategoryClick('Offers')}
       >
-        Offers
+        {offersImage && (
+          <div className="w-24 h-16 mb-2 overflow-hidden">
+            <img
+              src={offersImage}
+              alt="Offers"
+              className="w-full h-full object-cover object-center rounded-md shadow"
+            />
+          </div>
+        )}
+        <span>Offers</span>
       </div>
+
+      {/* Categories Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {categories.length > 0 ? (
-          categories.map((category) => (
-            <div
-              key={category._id}
-              className="flex flex-col items-center cursor-pointer border border-gray-300 rounded-md shadow-md p-2 transition-transform transform hover:scale-105"
-              onClick={() => handleCategoryClick(category.name)}
-            >
-              {category.categoryImage && category.categoryImage.length > 0 ? (
-                <div
-                  className={`grid ${getGridClasses(category.categoryImage.length)} gap-1 w-full`}
-                >
-                  {category.categoryImage.map((image, index) => (
-                    <div
-                      key={index}
-                      className="relative w-full aspect-square overflow-hidden"
-                    >
-                      <img
-                        src={image}
-                        alt={`Category ${index}`}
-                        className="w-full h-full object-cover rounded"
-                      />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="w-full aspect-square bg-gray-200 rounded flex items-center justify-center">
-                  <span>No images available</span>
-                </div>
-              )}
-              <h4 className="mt-2 font-semibold text-base text-center break-words">
-                {category.name}
-              </h4>
-            </div>
-          ))
+          categories
+            .filter((category) => category.name !== 'Offers') // Exclude Offers from the grid
+            .map((category) => (
+              <div
+                key={category._id}
+                className="flex flex-col items-center cursor-pointer border border-gray-300 rounded-md shadow-md p-2 transition-transform transform hover:scale-105"
+                onClick={() => handleCategoryClick(category.name)}
+              >
+                {category.categoryImage && category.categoryImage.length > 0 ? (
+                  <div
+                    className={`grid ${getGridClasses(category.categoryImage.length)} gap-1 w-full`}
+                  >
+                    {category.categoryImage.map((image, index) => (
+                      <div
+                        key={index}
+                        className="relative w-full aspect-square overflow-hidden"
+                      >
+                        <img
+                          src={image}
+                          alt={`Category ${index}`}
+                          className="w-full h-full object-cover object-center rounded"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="w-full aspect-square bg-gray-200 rounded flex items-center justify-center">
+                    <span>No images available</span>
+                  </div>
+                )}
+                <h4 className="mt-2 font-semibold text-base text-center break-words">
+                  {category.name}
+                </h4>
+              </div>
+            ))
         ) : (
           <p>No categories available</p>
         )}
