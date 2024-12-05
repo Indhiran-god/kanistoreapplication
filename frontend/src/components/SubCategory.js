@@ -1,232 +1,128 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import SummaryApi from '../common'; // Ensure the correct path to SummaryApi
+import React, { useState } from 'react';
+import { MdDelete, MdEdit } from "react-icons/md";
 import { toast } from 'react-toastify';
-import displayINRCurrency from '../helpers/displayCurrency'; // Currency formatting helper
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart } from '@fortawesome/free-solid-svg-icons'; // Import the cart icon
+import SummaryApi from '../common';
+import AdminEditSubcategory from './Admineditsubcategory'; // Import the Edit Subcategory Component
 
-const SubCategory = () => {
-  const { categoryName } = useParams();
-  const navigate = useNavigate();
-  const [data, setData] = useState({ subCategories: [], products: [] });
-  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [selectedQuantity, setSelectedQuantity] = useState(""); // State for selected quantity
+const AdminSubcategoryCard = ({ data, fetchdata }) => {
+    const [isEditing, setIsEditing] = useState(false);
 
-  const fetchSubCategories = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(SummaryApi.getSubcategories(categoryName).url);
-      const result = await response.json();
-      if (response.ok && result.success) {
-        setData((prevData) => ({ ...prevData, subCategories: result.data }));
-      } else {
-        throw new Error(result.message || 'Failed to fetch subcategories');
-      }
-    } catch (err) {
-      setError(err.message);
-      toast.error(err.message);
-    } finally {
-      setLoading(false);
+    const handleDeleteSubcategory = async () => {
+        if (window.confirm("Are you sure you want to delete this subcategory?")) {
+            try {
+                const subcategoryId = data._id;
+
+                if (!subcategoryId) {
+                    toast.error('Invalid subcategory ID');
+                    return;
+                }
+
+                const response = await fetch(SummaryApi.deleteSubcategory(subcategoryId).url, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                });
+
+                const responseData = await response.json();
+                if (response.ok && responseData.success) {
+                    toast.success(responseData.message);
+                    fetchdata();
+                } else {
+                    toast.error(responseData.message || 'Failed to delete subcategory');
+                }
+            } catch (error) {
+                console.error('Error while deleting subcategory:', error);
+                toast.error('An error occurred while deleting the subcategory');
+            }
+        }
+    };
+
+    const handleEditSubcategory = () => {
+        setIsEditing(true);
+    };
+
+    const handleCloseEdit = () => {
+        setIsEditing(false);
+    };
+
+    const subcategoryImages = data?.images || []; // Correct the image key to 'images'
+
+    // Debugging: Log the image array to check the data
+    console.log("Subcategory images: ", subcategoryImages);
+
+    const getGridClasses = () => {
+        switch (subcategoryImages.length) {
+            case 1:
+                return 'grid-cols-1';
+            case 2:
+                return 'grid-cols-2';
+            case 3:
+                return 'grid-cols-2 gap-x-2';
+            case 4:
+                return 'grid-cols-2 gap-x-2 gap-y-2';
+            default:
+                return 'grid-cols-1';
+        }
+    };
+
+    if (isEditing) {
+        document.body.style.overflow = 'hidden'; // Disable scroll
+    } else {
+        document.body.style.overflow = 'auto'; // Enable scroll
     }
-  };
 
-  const fetchProducts = async (subcategoryId) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(SummaryApi.getProducts(subcategoryId).url);
-      const result = await response.json();
-      if (response.ok && result.success) {
-        setData((prevData) => ({ ...prevData, products: result.data }));
-      } else {
-        throw new Error(result.message || 'Failed to fetch products');
-      }
-    } catch (err) {
-      setError(err.message);
-      toast.error(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSubCategories();
-  }, [categoryName]);
-
-  const handleSubcategoryClick = (subcategory) => {
-    setSelectedSubcategory(subcategory);
-    fetchProducts(subcategory._id);
-  };
-
-  const handleProductClick = (product) => {
-    navigate(`/product/${product._id}`);
-  };
-
-  const handleAddToCart = (productId, quantity, event) => {
-    event.stopPropagation(); // Prevents parent click handler (redirect to product page)
-    toast.success('Product added to cart');
-    console.log(`Adding product with ID ${productId} and quantity ${quantity} to cart`);
-  };
-
-  const handleBuyProduct = (productId, quantity, event) => {
-    event.stopPropagation(); // Prevents parent click handler (redirect to product page)
-    toast.success('Proceeding to checkout');
-    navigate(`/checkout/${productId}`);
-  };
-
-  const handleQuantityChange = (e) => {
-    setSelectedQuantity(e.target.value);
-  };
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
-  return (
-    <div className='p-4'>
-      <h2 className='bg-white py-2 px-4 flex justify-between items-center'>{categoryName}</h2>
-
-      {/* Subcategory Listing */}
-      {!selectedSubcategory && data.subCategories.length > 0 ? (
-        <div className="grid grid-cols-2 gap-4 mt-4">
-          {data.subCategories.map((sub) => (
-            <div
-              key={sub._id}
-              className="flex flex-col items-center border p-2 rounded shadow cursor-pointer"
-              onClick={() => handleSubcategoryClick(sub)}
-            >
-              <h1 className='flex-grow font-bold text-sm text-center'>
-                {sub?.image && Array.isArray(sub.image) && sub.image.length > 0 ? (
-                  <img
-                    src={sub.image[0]}
-                    alt={sub.name || 'Unnamed Subcategory'}
-                    className='w-full max-h-24 object-cover rounded mb-2'
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = 'fallback-image-url.jpg'; // Fallback image
-                    }}
-                  />
-                ) : (
-                  <div className='w-full h-24 rounded mb-2 bg-gray-300 flex justify-center items-center'>
-                    No Image
-                  </div>
-                )}
-                {sub.name || 'Unnamed Subcategory'}
-              </h1>
-            </div>
-          ))}
-        </div>
-      ) : null}
-
-      {/* Products in selected Subcategory */}
-      {selectedSubcategory && (
-        <div className='mt-8'>
-          <h3 className='bg-white py-2 px-4 flex justify-between items-center'>
-            Products in {selectedSubcategory.name}:
-          </h3>
-          {data.products.length > 0 ? (
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              {data.products.map((product) => (
-                <div
-                  key={product._id}
-                  className="bg-white p-4 rounded shadow"
-                >
-                  <div className='w-full'>
-                    {/* Product Image Clickable for Navigation */}
-                    <div
-                      className='w-full h-32 flex justify-center items-center cursor-pointer'
-                      onClick={() => handleProductClick(product)} // Redirect on image click
-                    >
-                      {product?.productImage && Array.isArray(product.productImage) && product.productImage.length > 0 ? (
-                        <img
-                          src={product.productImage[0]}
-                          className='object-fill h-full'
-                          alt={product.productName}
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = 'fallback-image-url.jpg'; // Fallback image
-                          }}
-                        />
-                      ) : (
-                        <div className='w-full h-full bg-gray-300 flex justify-center items-center'>
-                          No Image
-                        </div>
-                      )}
-                    </div>
-                    <h4 className='text-ellipsis line-clamp-2 font-semibold mt-2'>
-                      {product.productName}
-                    </h4>
-                    <div className='my-2'>
-                      <p className='font-semibold'>
-                        <span className='text-gray-500 line-through mr-2'>
-                          {displayINRCurrency(product.price)}
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Quantity Dropdown */}
-                  {product.quantityOptions && product.quantityOptions.length > 0 && (
-                    <div className='mt-2'>
-                      <label htmlFor="quantityOptions" className="block text-sm font-semibold">Quantity:</label>
-                      <select
-                        value={selectedQuantity}
-                        onChange={handleQuantityChange}
-                        className="p-2 bg-slate-100 border rounded w-full"
-                      >
-                        <option value="">--Select Quantity--</option>
-                        {product.quantityOptions.map((option, index) => (
-                          <option key={index} value={option.quantity}>
-                            {option.quantity} -- {displayINRCurrency(option.price)}
-                          </option>
+    return (
+        <div className='bg-white p-3 rounded shadow w-56 h-auto flex flex-col justify-between'>
+            <div className='flex flex-col items-center flex-grow'>
+                {subcategoryImages.length > 0 ? (
+                    <div className={`grid ${getGridClasses()} gap-1 w-full`}>
+                        {subcategoryImages.map((image, index) => (
+                            <div key={index} className='relative w-full h-24'>
+                                <img
+                                    src={image || '/default-placeholder-image.jpg'} // Default fallback if image is empty
+                                    alt={`Subcategory ${data?.name || ''} Image ${index + 1}`}
+                                    className='w-full h-full object-cover rounded'
+                                    onError={(e) => {
+                                        e.target.src = '/default-placeholder-image.jpg'; // Provide a fallback image
+                                    }}
+                                />
+                            </div>
                         ))}
-                      </select>
                     </div>
-                  )}
-
-                  {/* Display selected quantity price */}
-                  {selectedQuantity && product.quantityOptions && product.quantityOptions.length > 0 && (
-                    <div className='mt-2'>
-                      {product.quantityOptions.map((option) => {
-                        if (option.quantity === selectedQuantity) {
-                          return (
-                            <p key={option.quantity} className='font-semibold text-green-500'>
-                              Price for {selectedQuantity} items: {displayINRCurrency(option.price)}
-                            </p>
-                          );
-                        }
-                        return null;
-                      })}
+                ) : (
+                    <div className='w-full h-24 bg-gray-200 rounded mb-2 flex items-center justify-center'>
+                        <span>No images available</span>
                     </div>
-                  )}
-
-                  <div className='flex items-center gap-2 mt-2'>
-                    <button
-                      className='flex-grow text-sm border border-green-600 rounded px-2 py-1 text-green-600 font-medium hover:bg-green-600 hover:text-white transition-all'
-                      onClick={(e) => handleBuyProduct(product._id, selectedQuantity, e)}
-                    >
-                      Buy
-                    </button>
-                    <button
-                      className='flex-grow text-sm border border-green-600 rounded px-2 py-1 flex items-center justify-center bg-green-600 text-white hover:text-green-600 hover:bg-white transition-all'
-                      onClick={(e) => handleAddToCart(product._id, selectedQuantity, e)}
-                    >
-                      <FontAwesomeIcon icon={faShoppingCart} className='mr-1' />
-                    </button>
-                  </div>
-                </div>
-              ))}
+                )}
+                <h4 className='mt-2 font-semibold text-lg text-center'>
+                    {data?.name || 'Unnamed Subcategory'}
+                </h4>
             </div>
-          ) : (
-            <p>No products found for this subcategory.</p>
-          )}
+
+            <div className="flex justify-between items-center mt-3">
+                <MdEdit
+                    size={20}
+                    className='text-green-500 cursor-pointer hover:text-green-700'
+                    onClick={handleEditSubcategory}
+                />
+                <MdDelete
+                    size={20}
+                    className='text-red-500 cursor-pointer hover:text-red-700'
+                    onClick={handleDeleteSubcategory}
+                />
+            </div>
+
+            {isEditing && (
+                <AdminEditSubcategory
+                    onClose={handleCloseEdit}
+                    subcategoryData={data}
+                    fetchdata={fetchdata}
+                />
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 };
 
-export default SubCategory;
+export default AdminSubcategoryCard;
