@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { MdDelete, MdEdit } from "react-icons/md";
 import { toast } from 'react-toastify';
 import SummaryApi from '../common';
-import AdminEditSubcategory from './Admineditsubcategory'; // Import the Edit Subcategory Component
+import AdminEditSubcategory from '../Admineditsubcategory'; // Import the Edit Subcategory Component
 
 const AdminSubcategoryCard = ({ data, fetchdata }) => {
     const [isEditing, setIsEditing] = useState(false);
