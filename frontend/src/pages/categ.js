@@ -65,9 +65,14 @@ const Categ = () => {
               onClick={() => handleCategoryClick(category.name)}
             >
               {category.categoryImage && category.categoryImage.length > 0 ? (
-                <div className={`grid ${getGridClasses(category.categoryImage.length)} gap-1 w-full`}>
+                <div
+                  className={`grid ${getGridClasses(category.categoryImage.length)} gap-1 w-full`}
+                >
                   {category.categoryImage.map((image, index) => (
-                    <div key={index} className="relative w-full h-24">
+                    <div
+                      key={index}
+                      className="relative w-full aspect-square overflow-hidden"
+                    >
                       <img
                         src={image}
                         alt={`Category ${index}`}
@@ -77,7 +82,7 @@ const Categ = () => {
                   ))}
                 </div>
               ) : (
-                <div className="w-full h-24 bg-gray-200 rounded flex items-center justify-center">
+                <div className="w-full aspect-square bg-gray-200 rounded flex items-center justify-center">
                   <span>No images available</span>
                 </div>
               )}
