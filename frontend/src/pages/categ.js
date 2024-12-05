@@ -81,7 +81,7 @@ const Categ = () => {
                   <span>No images available</span>
                 </div>
               )}
-              <h4 className="mt-2 font-semibold text-base text-center truncate max-w-full">
+              <h4 className="mt-2 font-semibold text-base text-center break-words">
                 {category.name}
               </h4>
             </div>
