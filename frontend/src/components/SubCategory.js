@@ -13,7 +13,7 @@ const SubCategory = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedQuantityOption, setSelectedQuantityOption] = useState(null);
+  const [selectedQuantityOptions, setSelectedQuantityOptions] = useState({}); // Track selected quantities for all products
 
   const fetchSubCategories = async () => {
     setLoading(true);
@@ -60,7 +60,6 @@ const SubCategory = () => {
   const handleSubcategoryClick = (subcategory) => {
     setSelectedSubcategory(subcategory);
     fetchProducts(subcategory._id);
-    setSelectedQuantityOption(null);
   };
 
   const handleProductImageClick = (product) => {
@@ -79,9 +78,12 @@ const SubCategory = () => {
     navigate(`/checkout/${productId}`);
   };
 
-  const handleQuantityChange = (product, e) => {
-    const selectedOption = product.quantityOptions.find(option => option.quantity === e.target.value);
-    setSelectedQuantityOption(selectedOption);
+  const handleQuantityChange = (productId, e) => {
+    const selectedOption = e.target.value;
+    setSelectedQuantityOptions((prev) => ({
+      ...prev,
+      [productId]: selectedOption,
+    }));
   };
 
   if (loading) return <div>Loading...</div>;
@@ -162,10 +164,11 @@ const SubCategory = () => {
                   {product.quantityOptions && product.quantityOptions.length > 0 && (
                     <div className='flex items-center gap-2 mt-2'>
                       <select
-                        value={selectedQuantityOption ? selectedQuantityOption.quantity : ''}
-                        onChange={(e) => handleQuantityChange(product, e)}
+                        value={selectedQuantityOptions[product._id] || ''}
+                        onChange={(e) => handleQuantityChange(product._id, e)}
                         className='border rounded px-2 py-1'
                       >
+                        <option value="">Select quantity</option>
                         {product.quantityOptions.map((option) => (
                           <option key={option.quantity} value={option.quantity}>
                             {option.quantity} - {displayINRCurrency(option.price)}
@@ -201,4 +204,3 @@ const SubCategory = () => {
 };
 
 export default SubCategory;
-
