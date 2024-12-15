@@ -4,7 +4,7 @@ import SummaryApi from '../common'; // Ensure the correct path to SummaryApi
 import { toast } from 'react-toastify';
 import displayINRCurrency from '../helpers/displayCurrency'; // Currency formatting helper
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart } from '@fortawesome/free-solid-svg-icons'; // Import the cart icon
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
 const SubCategory = () => {
   const { categoryName } = useParams();
@@ -13,7 +13,7 @@ const SubCategory = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedQuantityOptions, setSelectedQuantityOptions] = useState({}); // Track selected quantities for all products
+  const [selectedQuantityOptions, setSelectedQuantityOptions] = useState({});
 
   const fetchSubCategories = async () => {
     setLoading(true);
@@ -168,11 +168,8 @@ const SubCategory = () => {
                         onChange={(e) => handleQuantityChange(product._id, e)}
                         className='border rounded px-2 py-1'
                       >
-                        <option value="">Select quantity</option>
                         {product.quantityOptions.map((option) => (
-                          <option key={option.quantity} value={option.quantity}>
-                            {option.quantity} - {displayINRCurrency(option.price)}
-                          </option>
+                          <option key={option} value={option}>{option}</option>
                         ))}
                       </select>
                     </div>
