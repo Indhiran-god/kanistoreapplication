@@ -77,6 +77,10 @@ const SubCategory = () => {
     navigate(`/checkout/${productId}`);
   };
 
+  const handleProductImageClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
@@ -85,7 +89,7 @@ const SubCategory = () => {
       <h2 className="text-lg font-semibold">{categoryName}</h2>
 
       {!selectedSubcategory && (
-        <div className="grid grid-cols-2 gap-4 mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
           {data.subCategories.map((sub) => (
             <div
               key={sub._id}
@@ -109,19 +113,20 @@ const SubCategory = () => {
           <h3 className="mt-4 text-lg font-semibold">
             Products in {selectedSubcategory.name}:
           </h3>
-          <div className="grid grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
             {data.products.map((product) => (
               <div
                 key={product._id}
                 className="border p-4 rounded shadow cursor-pointer"
-                onClick={() => navigate(`/product/${product._id}`)}
               >
-                <img
-                  src={product.productImage?.[0] || '/default-placeholder-image.jpg'}
-                  alt={product.productName}
-                  className="object-cover w-full h-32 rounded"
-                  onError={(e) => (e.target.src = '/default-placeholder-image.jpg')}
-                />
+                <div onClick={() => handleProductImageClick(product._id)}>
+                  <img
+                    src={product.productImage?.[0] || '/default-placeholder-image.jpg'}
+                    alt={product.productName}
+                    className="object-cover w-full h-32 rounded"
+                    onError={(e) => (e.target.src = '/default-placeholder-image.jpg')}
+                  />
+                </div>
                 <h4 className="mt-2 font-semibold">{product.productName}</h4>
                 <p className="text-gray-600">
                   {/* Display the base price (MRP) with a strike-through */}
@@ -177,3 +182,4 @@ const SubCategory = () => {
 };
 
 export default SubCategory;
+
