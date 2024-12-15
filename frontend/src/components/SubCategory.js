@@ -124,24 +124,35 @@ const SubCategory = () => {
                 />
                 <h4 className="mt-2 font-semibold">{product.productName}</h4>
                 <p className="text-gray-600">
-                  {displayINRCurrency(product.sellingPrice)}
+                  {/* Display the base price (MRP) with a strike-through */}
+                  {product.mrp && (
+                    <div className="text-red-500 line-through">
+                      <p className="font-semibold">{displayINRCurrency(product.mrp)}</p>
+                    </div>
+                  )}
                 </p>
-                <select
-                  value={selectedQuantities[product._id] || ''}
-                  onChange={(e) =>
-                    handleQuantityChange(product._id, e.target.value)
-                  }
-                  className="border rounded mt-2"
-                >
-                  <option value="" disabled>
-                    Select Quantity
-                  </option>
-                  {product.quantityOptions?.map((option) => (
-                    <option key={option.quantity} value={option.quantity}>
-                      {option.quantity}
-                    </option>
-                  ))}
-                </select>
+
+                {/* Quantity Options */}
+                {product.quantityOptions && product.quantityOptions.length > 0 && (
+                  <div className="mt-4">
+                    <label htmlFor="quantityOptions" className="text-sm font-medium text-gray-600">Quantity</label>
+                    <select
+                      id="quantityOptions"
+                      value={selectedQuantities[product._id] || ''}
+                      onChange={(e) =>
+                        handleQuantityChange(product._id, e.target.value)
+                      }
+                      className="mt-2 p-2 bg-slate-100 border rounded-md text-sm"
+                    >
+                      {product.quantityOptions.map((option) => (
+                        <option key={option.quantity} value={option.quantity}>
+                          {option.quantity} - {displayINRCurrency(option.price)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
                 <div className="flex gap-2 mt-2">
                   <button
                     className="flex-1 border px-2 py-1 text-green-600 border-green-600 rounded hover:bg-green-600 hover:text-white"
@@ -166,5 +177,3 @@ const SubCategory = () => {
 };
 
 export default SubCategory;
-
-
