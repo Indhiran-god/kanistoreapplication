@@ -161,9 +161,8 @@ const SubCategory = () => {
                       {product.productName}
                     </h4>
                     <p className='font-semibold text-gray-600'>
-                      Brand: {product.brandName} {/* Display brand name */}
                     </p>
-                    <p className='my-2'>{product.description}</p> {/* Display description */}
+              
                     <div className='my-2'>
                       <p className='font-semibold'>
                         <span className='text-gray-500 line-through mr-2'>
