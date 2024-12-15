@@ -13,7 +13,7 @@ const SubCategory = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedQuantityOption, setSelectedQuantityOption] = useState(null); // State for selected quantity option
+  const [selectedQuantityOption, setSelectedQuantityOption] = useState(null);
 
   const fetchSubCategories = async () => {
     setLoading(true);
@@ -60,21 +60,21 @@ const SubCategory = () => {
   const handleSubcategoryClick = (subcategory) => {
     setSelectedSubcategory(subcategory);
     fetchProducts(subcategory._id);
-    setSelectedQuantityOption(null); // Reset selection when subcategory changes
+    setSelectedQuantityOption(null);
   };
 
-  const handleProductClick = (product) => {
+  const handleProductImageClick = (product) => {
     navigate(`/product/${product._id}`);
   };
 
   const handleAddToCart = (productId, event) => {
-    event.stopPropagation(); // Prevents parent click handler
+    event.stopPropagation();
     toast.success('Product added to cart');
     console.log(`Adding product with ID ${productId} to cart`);
   };
 
   const handleBuyProduct = (productId, event) => {
-    event.stopPropagation(); // Prevents parent click handler
+    event.stopPropagation();
     toast.success('Proceeding to checkout');
     navigate(`/checkout/${productId}`);
   };
@@ -101,16 +101,14 @@ const SubCategory = () => {
               onClick={() => handleSubcategoryClick(sub)}
             >
               <h1 className='flex-grow font-bold text-sm text-center'>{sub.name}</h1>
-
-              {/* Subcategory Image Handling */}
               <div className='w-full h-24 flex justify-center items-center'>
                 {sub.images && sub.images.length > 0 ? (
                   <img
-                    src={sub.images[0]} // Assuming first image is representative
+                    src={sub.images[0]}
                     className='object-cover h-full w-full rounded'
                     alt={sub.name}
                     onError={(e) => {
-                      e.target.src = '/default-placeholder-image.jpg'; // Provide a fallback image
+                      e.target.src = '/default-placeholder-image.jpg';
                     }}
                   />
                 ) : (
@@ -135,8 +133,7 @@ const SubCategory = () => {
               {data.products.map((product) => (
                 <div
                   key={product._id}
-                  className="bg-white p-4 rounded shadow cursor-pointer"
-                  onClick={() => handleProductClick(product)}
+                  className="bg-white p-4 rounded shadow"
                 >
                   <div className='w-full'>
                     {/* Product Image Handling */}
@@ -144,11 +141,12 @@ const SubCategory = () => {
                       {product?.productImage && Array.isArray(product.productImage) && product.productImage.length > 0 ? (
                         <img
                           src={product.productImage[0]}
-                          className='object-fill h-full'
+                          className='object-fill h-full cursor-pointer'
                           alt={product.productName}
+                          onClick={() => handleProductImageClick(product)}
                           onError={(e) => {
                             e.target.onerror = null;
-                            e.target.src = 'fallback-image-url.jpg'; // Your fallback image URL
+                            e.target.src = 'fallback-image-url.jpg';
                           }}
                         />
                       ) : (
@@ -160,17 +158,7 @@ const SubCategory = () => {
                     <h4 className='text-ellipsis line-clamp-2 font-semibold mt-2'>
                       {product.productName}
                     </h4>
-                    <p className='font-semibold text-gray-600'>
-                    </p>
-              
-                   {/* Display the base price (MRP) with a strike-through */}
-                    {data.price && (
-                        <div className='text-red-500 line-through'>
-                            <p className='font-semibold'>{displayINRCurrency(data.price)}</p>
-                        </div>
-                    )}
                   </div>
-                  {/* Quantity Options */}
                   {product.quantityOptions && product.quantityOptions.length > 0 && (
                     <div className='flex items-center gap-2 mt-2'>
                       <select
@@ -180,15 +168,12 @@ const SubCategory = () => {
                       >
                         {product.quantityOptions.map((option) => (
                           <option key={option.quantity} value={option.quantity}>
-                            {option.quantity}-{displayINRCurrency(option.price)}
+                            {option.quantity} - {displayINRCurrency(option.price)}
                           </option>
                         ))}
                       </select>
-                      <p className='font-semibold'>
-                      </p>
                     </div>
                   )}
-                  {/* Add to Cart and Buy buttons */}
                   <div className='flex items-center gap-2 mt-2'>
                     <button
                       className='flex-grow text-sm border border-green-600 rounded px-2 py-1 text-green-600 font-medium hover:bg-green-600 hover:text-white transition-all'
@@ -216,3 +201,4 @@ const SubCategory = () => {
 };
 
 export default SubCategory;
+
