@@ -18,7 +18,9 @@ const SubCategory = () => {
   const fetchSubCategories = async () => {
     try {
       setLoading(true);
-      const response = await fetch(SummaryApi.getSubcategories(categoryName).url);
+      const url = SummaryApi.getSubcategories(categoryName).url;
+      console.log('Fetching subcategories from:', url);
+      const response = await fetch(url);
       const result = await response.json();
 
       if (response.ok && result.success) {
@@ -37,7 +39,9 @@ const SubCategory = () => {
   const fetchProducts = async (subcategoryId) => {
     try {
       setLoading(true);
-      const response = await fetch(SummaryApi.getProducts(subcategoryId).url);
+      const url = SummaryApi.getProducts(subcategoryId).url;
+      console.log('Fetching products from:', url);
+      const response = await fetch(url);
       const result = await response.json();
 
       if (response.ok && result.success) {
@@ -129,7 +133,6 @@ const SubCategory = () => {
                 </div>
                 <h4 className="mt-2 font-semibold">{product.productName}</h4>
                 <p className="text-gray-600">
-                  {/* Display the base price (MRP) with a strike-through */}
                   {product.mrp && (
                     <div className="text-red-500 line-through">
                       <p className="font-semibold">{displayINRCurrency(product.mrp)}</p>
@@ -137,16 +140,15 @@ const SubCategory = () => {
                   )}
                 </p>
 
-                {/* Quantity Options */}
                 {product.quantityOptions && product.quantityOptions.length > 0 && (
                   <div className="mt-4">
-                    <label htmlFor="quantityOptions" className="text-sm font-medium text-gray-600">Quantity</label>
+                    <label htmlFor="quantityOptions" className="text-sm font-medium text-gray-600">
+                      Quantity
+                    </label>
                     <select
                       id="quantityOptions"
                       value={selectedQuantities[product._id] || ''}
-                      onChange={(e) =>
-                        handleQuantityChange(product._id, e.target.value)
-                      }
+                      onChange={(e) => handleQuantityChange(product._id, e.target.value)}
                       className="mt-2 p-2 bg-slate-100 border rounded-md text-sm"
                     >
                       {product.quantityOptions.map((option) => (
@@ -182,4 +184,5 @@ const SubCategory = () => {
 };
 
 export default SubCategory;
+
 
