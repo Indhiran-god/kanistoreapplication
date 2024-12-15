@@ -93,7 +93,7 @@ const SubCategory = () => {
       <h2 className="text-lg font-semibold">{categoryName}</h2>
 
       {!selectedSubcategory && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
           {data.subCategories.map((sub) => (
             <div
               key={sub._id}
@@ -117,7 +117,7 @@ const SubCategory = () => {
           <h3 className="mt-4 text-lg font-semibold">
             Products in {selectedSubcategory.name}:
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
             {data.products.map((product) => (
               <div
                 key={product._id}
@@ -184,5 +184,6 @@ const SubCategory = () => {
 };
 
 export default SubCategory;
+
 
 
