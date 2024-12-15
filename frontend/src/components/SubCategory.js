@@ -92,98 +92,105 @@ const SubCategory = () => {
     <div className="p-4">
       <h2 className="text-lg font-semibold">{categoryName}</h2>
 
-      {!selectedSubcategory && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-          {data.subCategories.map((sub) => (
-            <div
-              key={sub._id}
-              className="border p-4 rounded shadow cursor-pointer"
-              onClick={() => handleSubcategoryClick(sub)}
-            >
-              <h3 className="font-semibold text-center">{sub.name}</h3>
-              <img
-                src={sub.images?.[0] || '/default-placeholder-image.jpg'}
-                alt={sub.name}
-                className="object-cover w-full h-32 rounded"
-                onError={(e) => (e.target.src = '/default-placeholder-image.jpg')}
-              />
-            </div>
-          ))}
-        </div>
-      )}
-
-      {selectedSubcategory && (
-        <div>
-          <h3 className="mt-4 text-lg font-semibold">
-            Products in {selectedSubcategory.name}:
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-            {data.products.map((product) => (
+      <div className="flex flex-wrap gap-6 mt-4">
+        {/* Subcategories */}
+        <div className="flex-1 min-w-[250px]">
+          <h3 className="text-lg font-semibold mb-2">Subcategories</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-1 gap-4">
+            {data.subCategories.map((sub) => (
               <div
-                key={product._id}
+                key={sub._id}
                 className="border p-4 rounded shadow cursor-pointer"
+                onClick={() => handleSubcategoryClick(sub)}
               >
-                <div onClick={() => handleProductImageClick(product._id)}>
-                  <img
-                    src={product.productImage?.[0] || '/default-placeholder-image.jpg'}
-                    alt={product.productName}
-                    className="object-cover w-full h-32 rounded"
-                    onError={(e) => (e.target.src = '/default-placeholder-image.jpg')}
-                  />
-                </div>
-                <h4 className="mt-2 font-semibold">{product.productName}</h4>
-                <p className="text-gray-600">
-                  {product.mrp && (
-                    <div className="text-red-500 line-through">
-                      <p className="font-semibold">{displayINRCurrency(product.mrp)}</p>
-                    </div>
-                  )}
-                </p>
-
-                {product.quantityOptions && product.quantityOptions.length > 0 && (
-                  <div className="mt-4">
-                    <label htmlFor="quantityOptions" className="text-sm font-medium text-gray-600">
-                      Quantity
-                    </label>
-                    <select
-                      id="quantityOptions"
-                      value={selectedQuantities[product._id] || ''}
-                      onChange={(e) => handleQuantityChange(product._id, e.target.value)}
-                      className="mt-2 p-2 bg-slate-100 border rounded-md text-sm"
-                    >
-                      {product.quantityOptions.map((option) => (
-                        <option key={option.quantity} value={option.quantity}>
-                          {option.quantity} - {displayINRCurrency(option.price)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-
-                <div className="flex gap-2 mt-2">
-                  <button
-                    className="flex-1 border px-2 py-1 text-green-600 border-green-600 rounded hover:bg-green-600 hover:text-white"
-                    onClick={(e) => handleBuyNow(product._id, e)}
-                  >
-                    Buy Now
-                  </button>
-                  <button
-                    className="flex-1 border px-2 py-1 text-green-600 border-green-600 rounded bg-green-600 text-white hover:bg-white hover:text-green-600"
-                    onClick={(e) => handleAddToCart(product._id, e)}
-                  >
-                    <FontAwesomeIcon icon={faShoppingCart} />
-                  </button>
-                </div>
+                <h3 className="font-semibold text-center">{sub.name}</h3>
+                <img
+                  src={sub.images?.[0] || '/default-placeholder-image.jpg'}
+                  alt={sub.name}
+                  className="object-cover w-full h-32 rounded"
+                  onError={(e) => (e.target.src = '/default-placeholder-image.jpg')}
+                />
               </div>
             ))}
           </div>
         </div>
-      )}
+
+        {/* Products */}
+        {selectedSubcategory && (
+          <div className="flex-1 min-w-[250px]">
+            <h3 className="mt-4 text-lg font-semibold">Products in {selectedSubcategory.name}:</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+              {data.products.map((product) => (
+                <div
+                  key={product._id}
+                  className="border p-4 rounded shadow cursor-pointer"
+                >
+                  <div onClick={() => handleProductImageClick(product._id)}>
+                    <img
+                      src={product.productImage?.[0] || '/default-placeholder-image.jpg'}
+                      alt={product.productName}
+                      className="object-cover w-full h-32 rounded"
+                      onError={(e) => (e.target.src = '/default-placeholder-image.jpg')}
+                    />
+                  </div>
+                  <h4 className="mt-2 font-semibold">{product.productName}</h4>
+                  <p className="text-gray-600">
+                    {product.mrp && (
+                      <div className="text-red-500 line-through">
+                        <p className="font-semibold">{displayINRCurrency(product.mrp)}</p>
+                      </div>
+                    )}
+                  </p>
+
+                  {product.quantityOptions && product.quantityOptions.length > 0 && (
+                    <div className="mt-4">
+                      <label
+                        htmlFor="quantityOptions"
+                        className="text-sm font-medium text-gray-600"
+                      >
+                        Quantity
+                      </label>
+                      <select
+                        id="quantityOptions"
+                        value={selectedQuantities[product._id] || ''}
+                        onChange={(e) => handleQuantityChange(product._id, e.target.value)}
+                        className="mt-2 p-2 bg-slate-100 border rounded-md text-sm"
+                      >
+                        {product.quantityOptions.map((option) => (
+                          <option key={option.quantity} value={option.quantity}>
+                            {option.quantity} - {displayINRCurrency(option.price)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  <div className="flex gap-2 mt-2">
+                    <button
+                      className="flex-1 border px-2 py-1 text-green-600 border-green-600 rounded hover:bg-green-600 hover:text-white"
+                      onClick={(e) => handleBuyNow(product._id, e)}
+                    >
+                      Buy Now
+                    </button>
+                    <button
+                      className="flex-1 border px-2 py-1 text-green-600 border-green-600 rounded bg-green-600 text-white hover:bg-white hover:text-green-600"
+                      onClick={(e) => handleAddToCart(product._id, e)}
+                    >
+                      <FontAwesomeIcon icon={faShoppingCart} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
 export default SubCategory;
+
 
 
 
