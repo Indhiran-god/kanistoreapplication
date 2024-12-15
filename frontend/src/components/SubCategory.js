@@ -163,13 +163,12 @@ const SubCategory = () => {
                     <p className='font-semibold text-gray-600'>
                     </p>
               
-                    <div className='my-2'>
-                      <p className='font-semibold'>
-                        <span className='text-gray-500 line-through mr-2'>
-                          {displayINRCurrency(product.price)}
-                        </span>
-                      </p>
-                    </div>
+                   {/* Display the base price (MRP) with a strike-through */}
+                    {data.price && (
+                        <div className='text-red-500 line-through'>
+                            <p className='font-semibold'>{displayINRCurrency(data.price)}</p>
+                        </div>
+                    )}
                   </div>
                   {/* Quantity Options */}
                   {product.quantityOptions && product.quantityOptions.length > 0 && (
