@@ -191,7 +191,7 @@ const ProductPage = () => {
           <h2 className='text-xl font-semibold'>{data.productName}</h2>
           <p>{data.brandName}</p>
 
-          <p className='mt-4 text-sm text-gray-400'>M.R.P: {displayINRCurrency(data.price)}</p>
+          <p className='mt-4 text-sm text-gray-400 line-through mr-2'>M.R.P: {displayINRCurrency(data.price)}</p>
 
           <p className='text-sm text-gray-500'>{data.description}</p>
 
@@ -205,10 +205,9 @@ const ProductPage = () => {
                 onChange={handleQuantityChange}
                 className="mt-2 p-2 bg-slate-100 border rounded-md text-sm"
               >
-                <option value="">--Select Quantity--</option>
-                {data.quantityOptions.map((option, index) => (
-                  <option key={index} value={option.quantity}>
-                    {option.quantity}-{displayINRCurrency(option.price)}
+               {data.quantityOptions.map((option) => (
+                  <option key={option.quantity} value={option.quantity}>
+                    {option.quantity} - {displayINRCurrency(option.price)}
                   </option>
                 ))}
               </select>
@@ -255,7 +254,7 @@ const ProductPage = () => {
                   className='text-sm border border-green-600 rounded px-4 py-2 text-green-600 font-medium hover:bg-green-600 hover:text-white transition-all'
                   onClick={(e) => handleBuyProduct(e, product._id, 1)}
                 >
-                  Buy
+                  Buy Now
                 </button>
                 <button
                   className='flex items-center justify-center border border-green-600 rounded px-2 py-2 bg-green-600 text-white font-medium hover:text-green-600 hover:bg-white transition-all'
