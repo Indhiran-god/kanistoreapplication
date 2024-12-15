@@ -208,7 +208,7 @@ const ProductPage = () => {
                 <option value="">--Select Quantity--</option>
                 {data.quantityOptions.map((option, index) => (
                   <option key={index} value={option.quantity}>
-                    {option.quantity} for {displayINRCurrency(option.price)}
+                    {option.quantity}-{displayINRCurrency(option.price)}
                   </option>
                 ))}
               </select>
