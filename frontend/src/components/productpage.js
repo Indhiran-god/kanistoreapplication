@@ -191,7 +191,12 @@ const ProductPage = () => {
           <h2 className='text-xl font-semibold'>{data.productName}</h2>
           <p>{data.brandName}</p>
 
-          <p className='mt-4 text-sm text-gray-400 line-through mr-2'>M.R.P: {displayINRCurrency(data.price)}</p>
+          {/* Display the base price (MRP) with a strike-through */}
+                    {data.price && (
+                        <div className='text-red-500 line-through'>
+                            <p className='font-semibold'>{displayINRCurrency(data.price)}</p>
+                        </div>
+                    )}
 
           <p className='text-sm text-gray-500'>{data.description}</p>
 
