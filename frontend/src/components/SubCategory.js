@@ -181,7 +181,7 @@ const SubCategory = () => {
                       >
                         {product.quantityOptions.map((option) => (
                           <option key={option.quantity} value={option.quantity}>
-                            {option.quantity}
+                            {option.quantity}-{displayINRCurrency(option.price)}
                           </option>
                         ))}
                       </select>
