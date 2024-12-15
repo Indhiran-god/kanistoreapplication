@@ -168,7 +168,6 @@ const SubCategory = () => {
                         <span className='text-gray-500 line-through mr-2'>
                           {displayINRCurrency(product.price)}
                         </span>
-                        {displayINRCurrency(product.sellingPrice)}
                       </p>
                     </div>
                   </div>
@@ -187,7 +186,6 @@ const SubCategory = () => {
                         ))}
                       </select>
                       <p className='font-semibold'>
-                        Total: {displayINRCurrency(selectedQuantityOption ? selectedQuantityOption.price : product.sellingPrice)}
                       </p>
                     </div>
                   )}
