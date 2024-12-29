@@ -182,11 +182,14 @@ const SubCategory = () => {
                       {product.productName}
                     </h4>
                     <div className="my-2">
-                      <p className="font-semibold">
-                        <span className="text-gray-500 line-through mr-2">
-                          {displayINRCurrency(product.price)}
-                        </span>
-                      </p>
+                      {product.price && (
+  <p className="font-semibold">
+    <span className="text-gray-500 line-through mr-2">
+      {displayINRCurrency(product.price)}
+    </span>
+  </p>
+)}
+
                     </div>
                     {product.quantityOptions && product.quantityOptions.length > 0 && (
                       <div className="flex items-center gap-2 mt-2">
