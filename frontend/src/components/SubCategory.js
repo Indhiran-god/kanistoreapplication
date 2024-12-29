@@ -18,6 +18,7 @@ const SubCategory = () => {
   const fetchSubCategories = async () => {
     try {
       setLoading(true);
+      setError(null);
       const url = SummaryApi.getSubcategories(categoryName).url;
       const response = await fetch(url);
       const result = await response.json();
@@ -38,6 +39,7 @@ const SubCategory = () => {
   const fetchProducts = async (subcategoryId) => {
     try {
       setLoading(true);
+      setError(null);
       const url = SummaryApi.getProducts(subcategoryId).url;
       const response = await fetch(url);
       const result = await response.json();
@@ -64,8 +66,23 @@ const SubCategory = () => {
     fetchProducts(subcategory._id);
   };
 
-  const handleProductImageClick = (productId) => {
-    navigate(`/product/${productId}`);
+  const handleProductClick = (product) => {
+    navigate(`/product/${product._id}`);
+  };
+
+  const handleQuantityChange = (product, event) => {
+    const quantity = event.target.value;
+    setSelectedQuantities((prev) => ({ ...prev, [product._id]: quantity }));
+  };
+
+  const handleBuyProduct = (productId, event) => {
+    event.stopPropagation();
+    toast.info(`Buying product with ID: ${productId}`);
+  };
+
+  const handleAddToCart = (productId, event) => {
+    event.stopPropagation();
+    toast.success(`Added product with ID: ${productId} to cart.`);
   };
 
   const getGridClasses = (imageCount) => {
@@ -88,7 +105,7 @@ const SubCategory = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-lg font-semibold">{categoryName}</h2>
+      <h2 className="text-lg font-semibold capitalize">{categoryName}</h2>
 
       {!selectedSubcategory && (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
@@ -129,34 +146,91 @@ const SubCategory = () => {
       )}
 
       {selectedSubcategory && (
-        <div>
-          <h3 className="mt-4 text-lg font-semibold">
+        <div className="mt-8">
+          <h3 className="bg-white py-2 px-4 flex justify-between items-center">
             Products in {selectedSubcategory.name}:
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
-            {data.products.map((product) => (
-              <div
-                key={product._id}
-                className="border p-4 rounded-md shadow-md cursor-pointer transition-transform transform hover:scale-105"
-                onClick={() => handleProductImageClick(product._id)}
-              >
-                <img
-                  src={product.productImage?.[0] || '/default-placeholder-image.jpg'}
-                  alt={product.productName}
-                  className="object-cover w-full h-32 rounded"
-                  onError={(e) => (e.target.src = '/default-placeholder-image.jpg')}
-                />
-                <h4 className="mt-2 font-semibold">{product.productName}</h4>
-                <p className="text-gray-600">
-                  {product.mrp && (
-                    <div className="text-red-500 line-through">
-                      <p className="font-semibold">{displayINRCurrency(product.mrp)}</p>
+          {data.products.length > 0 ? (
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              {data.products.map((product) => (
+                <div
+                  key={product._id}
+                  className="bg-white p-4 rounded shadow cursor-pointer"
+                  onClick={() => handleProductClick(product)}
+                >
+                  <div className="w-full">
+                    <div className="w-full h-32 flex justify-center items-center">
+                      {product?.productImage && Array.isArray(product.productImage) && product.productImage.length > 0 ? (
+                        <img
+                          src={product.productImage[0]}
+                          className="object-fill h-full"
+                          alt={product.productName}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = 'fallback-image-url.jpg';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gray-300 flex justify-center items-center">
+                          No Image
+                        </div>
+                      )}
+                    </div>
+                    <h4 className="text-ellipsis line-clamp-2 font-semibold mt-2">
+                      {product.productName}
+                    </h4>
+                    <div className="my-2">
+                      <p className="font-semibold">
+                        <span className="text-gray-500 line-through mr-2">
+                          {displayINRCurrency(product.price)}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+
+                  {product.quantityOptions && product.quantityOptions.length > 0 && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <select
+                        value={selectedQuantities[product._id] || product.quantityOptions[0].quantity}
+                        onChange={(e) => handleQuantityChange(product, e)}
+                        className="border rounded px-2 py-1"
+                      >
+                        {product.quantityOptions.map((option) => (
+                          <option key={option.quantity} value={option.quantity}>
+                            {option.quantity} - {displayINRCurrency(option.price)}
+                          </option>
+                        ))}
+                      </select>
+                      <p className="text-sm text-gray-600">
+                        Price: {displayINRCurrency(
+                          product.quantityOptions.find(
+                            (option) => option.quantity === (selectedQuantities[product._id] || product.quantityOptions[0].quantity)
+                          ).price
+                        )}
+                      </p>
                     </div>
                   )}
-                </p>
-              </div>
-            ))}
-          </div>
+
+                  <div className="flex items-center gap-2 mt-2">
+                    <button
+                      className="flex-grow text-sm border border-green-600 rounded px-2 py-1 text-green-600 font-medium hover:bg-green-600 hover:text-white transition-all"
+                      onClick={(e) => handleBuyProduct(product._id, e)}
+                    >
+                      Buy
+                    </button>
+                    <button
+                      className="flex-grow text-sm border border-green-600 rounded px-2 py-1 flex items-center justify-center bg-green-600 text-white hover:text-green-600 hover:bg-white transition-all"
+                      onClick={(e) => handleAddToCart(product._id, e)}
+                    >
+                      <FontAwesomeIcon icon={faShoppingCart} className="mr-1" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No products found for this subcategory.</p>
+          )}
         </div>
       )}
     </div>
