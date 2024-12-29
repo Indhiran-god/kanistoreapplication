@@ -18,7 +18,6 @@ const SubCategory = () => {
   const fetchSubCategories = async () => {
     try {
       setLoading(true);
-      setError(null);
       const url = SummaryApi.getSubcategories(categoryName).url;
       const response = await fetch(url);
       const result = await response.json();
@@ -39,7 +38,6 @@ const SubCategory = () => {
   const fetchProducts = async (subcategoryId) => {
     try {
       setLoading(true);
-      setError(null);
       const url = SummaryApi.getProducts(subcategoryId).url;
       const response = await fetch(url);
       const result = await response.json();
@@ -71,18 +69,22 @@ const SubCategory = () => {
   };
 
   const handleQuantityChange = (product, event) => {
-    const quantity = event.target.value;
-    setSelectedQuantities((prev) => ({ ...prev, [product._id]: quantity }));
+    setSelectedQuantities((prev) => ({
+      ...prev,
+      [product._id]: event.target.value,
+    }));
   };
 
   const handleBuyProduct = (productId, event) => {
     event.stopPropagation();
-    toast.info(`Buying product with ID: ${productId}`);
+    toast.success(`Product ${productId} bought successfully!`);
+    // Add buy product logic here
   };
 
   const handleAddToCart = (productId, event) => {
     event.stopPropagation();
-    toast.success(`Added product with ID: ${productId} to cart.`);
+    toast.success(`Product ${productId} added to cart!`);
+    // Add add-to-cart logic here
   };
 
   const getGridClasses = (imageCount) => {
@@ -105,7 +107,7 @@ const SubCategory = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-lg font-semibold capitalize">{categoryName}</h2>
+      <h2 className="text-lg font-semibold">{categoryName}</h2>
 
       {!selectedSubcategory && (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
@@ -186,44 +188,44 @@ const SubCategory = () => {
                         </span>
                       </p>
                     </div>
-                  </div>
-
-                  {product.quantityOptions && product.quantityOptions.length > 0 && (
+                    {product.quantityOptions && product.quantityOptions.length > 0 && (
+                      <div className="flex items-center gap-2 mt-2">
+                        <select
+                          value={selectedQuantities[product._id] || product.quantityOptions[0].quantity}
+                          onChange={(e) => handleQuantityChange(product, e)}
+                          className="border rounded px-2 py-1"
+                        >
+                          {product.quantityOptions.map((option) => (
+                            <option key={option.quantity} value={option.quantity}>
+                              {option.quantity} - {displayINRCurrency(option.price)}
+                            </option>
+                          ))}
+                        </select>
+                        <p className="text-sm text-gray-600">
+                          Price: {displayINRCurrency(
+                            product.quantityOptions.find(
+                              (option) =>
+                                option.quantity ===
+                                (selectedQuantities[product._id] || product.quantityOptions[0].quantity)
+                            ).price
+                          )}
+                        </p>
+                      </div>
+                    )}
                     <div className="flex items-center gap-2 mt-2">
-                      <select
-                        value={selectedQuantities[product._id] || product.quantityOptions[0].quantity}
-                        onChange={(e) => handleQuantityChange(product, e)}
-                        className="border rounded px-2 py-1"
+                      <button
+                        className="flex-grow text-sm border border-green-600 rounded px-2 py-1 text-green-600 font-medium hover:bg-green-600 hover:text-white transition-all"
+                        onClick={(e) => handleBuyProduct(product._id, e)}
                       >
-                        {product.quantityOptions.map((option) => (
-                          <option key={option.quantity} value={option.quantity}>
-                            {option.quantity} - {displayINRCurrency(option.price)}
-                          </option>
-                        ))}
-                      </select>
-                      <p className="text-sm text-gray-600">
-                        Price: {displayINRCurrency(
-                          product.quantityOptions.find(
-                            (option) => option.quantity === (selectedQuantities[product._id] || product.quantityOptions[0].quantity)
-                          ).price
-                        )}
-                      </p>
+                        Buy
+                      </button>
+                      <button
+                        className="flex-grow text-sm border border-green-600 rounded px-2 py-1 flex items-center justify-center bg-green-600 text-white hover:text-green-600 hover:bg-white transition-all"
+                        onClick={(e) => handleAddToCart(product._id, e)}
+                      >
+                        <FontAwesomeIcon icon={faShoppingCart} className="mr-1" />
+                      </button>
                     </div>
-                  )}
-
-                  <div className="flex items-center gap-2 mt-2">
-                    <button
-                      className="flex-grow text-sm border border-green-600 rounded px-2 py-1 text-green-600 font-medium hover:bg-green-600 hover:text-white transition-all"
-                      onClick={(e) => handleBuyProduct(product._id, e)}
-                    >
-                      Buy
-                    </button>
-                    <button
-                      className="flex-grow text-sm border border-green-600 rounded px-2 py-1 flex items-center justify-center bg-green-600 text-white hover:text-green-600 hover:bg-white transition-all"
-                      onClick={(e) => handleAddToCart(product._id, e)}
-                    >
-                      <FontAwesomeIcon icon={faShoppingCart} className="mr-1" />
-                    </button>
                   </div>
                 </div>
               ))}
@@ -238,3 +240,4 @@ const SubCategory = () => {
 };
 
 export default SubCategory;
+
