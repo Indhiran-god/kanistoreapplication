@@ -19,7 +19,6 @@ const SubCategory = () => {
     try {
       setLoading(true);
       const url = SummaryApi.getSubcategories(categoryName).url;
-      console.log('Fetching subcategories from:', url);
       const response = await fetch(url);
       const result = await response.json();
 
@@ -40,7 +39,6 @@ const SubCategory = () => {
     try {
       setLoading(true);
       const url = SummaryApi.getProducts(subcategoryId).url;
-      console.log('Fetching products from:', url);
       const response = await fetch(url);
       const result = await response.json();
 
@@ -66,23 +64,23 @@ const SubCategory = () => {
     fetchProducts(subcategory._id);
   };
 
-  const handleQuantityChange = (productId, quantity) => {
-    setSelectedQuantities((prev) => ({ ...prev, [productId]: quantity }));
-  };
-
-  const handleAddToCart = (productId, event) => {
-    event.stopPropagation();
-    toast.success('Product added to cart');
-    console.log(`Adding product ${productId} to cart`);
-  };
-
-  const handleBuyNow = (productId, event) => {
-    event.stopPropagation();
-    navigate(`/checkout/${productId}`);
-  };
-
   const handleProductImageClick = (productId) => {
     navigate(`/product/${productId}`);
+  };
+
+  const getGridClasses = (imageCount) => {
+    switch (imageCount) {
+      case 1:
+        return 'grid-cols-1';
+      case 2:
+        return 'grid-cols-2';
+      case 3:
+        return 'grid-cols-2 gap-x-2';
+      case 4:
+        return 'grid-cols-2 gap-x-2 gap-y-2';
+      default:
+        return 'grid-cols-1';
+    }
   };
 
   if (loading) return <div>Loading...</div>;
@@ -93,20 +91,38 @@ const SubCategory = () => {
       <h2 className="text-lg font-semibold">{categoryName}</h2>
 
       {!selectedSubcategory && (
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
           {data.subCategories.map((sub) => (
             <div
               key={sub._id}
-              className="border p-4 rounded shadow cursor-pointer"
+              className="flex flex-col items-center cursor-pointer border border-gray-300 rounded-md shadow-md p-2 transition-transform transform hover:scale-105"
               onClick={() => handleSubcategoryClick(sub)}
             >
-              <h3 className="font-semibold text-center">{sub.name}</h3>
-              <img
-                src={sub.images?.[0] || '/default-placeholder-image.jpg'}
-                alt={sub.name}
-                className="object-cover w-full h-32 rounded"
-                onError={(e) => (e.target.src = '/default-placeholder-image.jpg')}
-              />
+              {sub.images && sub.images.length > 0 ? (
+                <div
+                  className={`grid ${getGridClasses(sub.images.length)} gap-1 w-full`}
+                >
+                  {sub.images.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative w-full aspect-square overflow-hidden"
+                    >
+                      <img
+                        src={image}
+                        alt={`Subcategory ${index}`}
+                        className="w-full h-full object-cover object-center rounded"
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="w-full aspect-square bg-gray-200 rounded flex items-center justify-center">
+                  <span>No images available</span>
+                </div>
+              )}
+              <h4 className="mt-2 font-semibold text-base text-center break-words">
+                {sub.name}
+              </h4>
             </div>
           ))}
         </div>
@@ -117,20 +133,19 @@ const SubCategory = () => {
           <h3 className="mt-4 text-lg font-semibold">
             Products in {selectedSubcategory.name}:
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
             {data.products.map((product) => (
               <div
                 key={product._id}
-                className="border p-4 rounded shadow cursor-pointer"
+                className="border p-4 rounded-md shadow-md cursor-pointer transition-transform transform hover:scale-105"
+                onClick={() => handleProductImageClick(product._id)}
               >
-                <div onClick={() => handleProductImageClick(product._id)}>
-                  <img
-                    src={product.productImage?.[0] || '/default-placeholder-image.jpg'}
-                    alt={product.productName}
-                    className="object-cover w-full h-32 rounded"
-                    onError={(e) => (e.target.src = '/default-placeholder-image.jpg')}
-                  />
-                </div>
+                <img
+                  src={product.productImage?.[0] || '/default-placeholder-image.jpg'}
+                  alt={product.productName}
+                  className="object-cover w-full h-32 rounded"
+                  onError={(e) => (e.target.src = '/default-placeholder-image.jpg')}
+                />
                 <h4 className="mt-2 font-semibold">{product.productName}</h4>
                 <p className="text-gray-600">
                   {product.mrp && (
@@ -139,41 +154,6 @@ const SubCategory = () => {
                     </div>
                   )}
                 </p>
-
-                {product.quantityOptions && product.quantityOptions.length > 0 && (
-                  <div className="mt-4">
-                    <label htmlFor="quantityOptions" className="text-sm font-medium text-gray-600">
-                      Quantity
-                    </label>
-                    <select
-                      id="quantityOptions"
-                      value={selectedQuantities[product._id] || ''}
-                      onChange={(e) => handleQuantityChange(product._id, e.target.value)}
-                      className="mt-2 p-2 bg-slate-100 border rounded-md text-sm"
-                    >
-                      {product.quantityOptions.map((option) => (
-                        <option key={option.quantity} value={option.quantity}>
-                          {option.quantity} - {displayINRCurrency(option.price)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-
-                <div className="flex gap-2 mt-2">
-                  <button
-                    className="flex-1 border px-2 py-1 text-green-600 border-green-600 rounded hover:bg-green-600 hover:text-white"
-                    onClick={(e) => handleBuyNow(product._id, e)}
-                  >
-                    Buy Now
-                  </button>
-                  <button
-                    className="flex-1 border px-2 py-1 text-green-600 border-green-600 rounded bg-green-600 text-white hover:bg-white hover:text-green-600"
-                    onClick={(e) => handleAddToCart(product._id, e)}
-                  >
-                    <FontAwesomeIcon icon={faShoppingCart} />
-                  </button>
-                </div>
               </div>
             ))}
           </div>
@@ -184,8 +164,3 @@ const SubCategory = () => {
 };
 
 export default SubCategory;
-
-
-
-
-
