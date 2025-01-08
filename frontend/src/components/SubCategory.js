@@ -77,13 +77,13 @@ const SubCategory = () => {
 
   const handleBuyProduct = (productId, event) => {
     event.stopPropagation();
-    toast.success(`Product ${productId} bought successfully!`);
+    toast.success(`Moving to Payment page`);
     // Add buy product logic here
   };
 
   const handleAddToCart = (productId, event) => {
     event.stopPropagation();
-    toast.success(`Product ${productId} added to cart!`);
+    toast.success(`Product added to cart!`);
     // Add add-to-cart logic here
   };
 
@@ -158,12 +158,13 @@ const SubCategory = () => {
                 <div
                   key={product._id}
                   className="bg-white p-4 rounded shadow cursor-pointer"
-                  onClick={() => handleProductClick(product)}
+               
                 >
                   <div className="w-full">
                     <div className="w-full h-32 flex justify-center items-center">
                       {product?.productImage && Array.isArray(product.productImage) && product.productImage.length > 0 ? (
                         <img
+                        onClick={() => handleProductClick(product)}
                           src={product.productImage[0]}
                           className="object-fill h-full"
                           alt={product.productName}
@@ -204,15 +205,6 @@ const SubCategory = () => {
                             </option>
                           ))}
                         </select>
-                        <p className="text-sm text-gray-600">
-                          Price: {displayINRCurrency(
-                            product.quantityOptions.find(
-                              (option) =>
-                                option.quantity ===
-                                (selectedQuantities[product._id] || product.quantityOptions[0].quantity)
-                            ).price
-                          )}
-                        </p>
                       </div>
                     )}
                     <div className="flex items-center gap-2 mt-2">
@@ -243,4 +235,3 @@ const SubCategory = () => {
 };
 
 export default SubCategory;
-
