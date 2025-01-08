@@ -78,11 +78,13 @@ const SubCategory = () => {
   const handleBuyProduct = (productId, event) => {
     event.stopPropagation();
     toast.success(`Moving to Payment page`);
+    // Add buy product logic here
   };
 
   const handleAddToCart = (productId, event) => {
     event.stopPropagation();
     toast.success(`Product added to cart!`);
+    // Add add-to-cart logic here
   };
 
   const getGridClasses = (imageCount) => {
@@ -104,8 +106,9 @@ const SubCategory = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="p-4">
+    <div className="p-4 flex flex-col min-h-screen">
       <h2 className="text-lg font-semibold">{categoryName}</h2>
+
       {!selectedSubcategory && (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
           {data.subCategories.map((sub) => (
@@ -143,6 +146,7 @@ const SubCategory = () => {
           ))}
         </div>
       )}
+
       {selectedSubcategory && (
         <div className="mt-8">
           <h3 className="bg-white py-2 px-4 flex justify-between items-center">
@@ -157,9 +161,7 @@ const SubCategory = () => {
                 >
                   <div className="w-full">
                     <div className="w-full h-32 flex justify-center items-center">
-                      {product?.productImage &&
-                      Array.isArray(product.productImage) &&
-                      product.productImage.length > 0 ? (
+                      {product?.productImage && Array.isArray(product.productImage) && product.productImage.length > 0 ? (
                         <img
                           onClick={() => handleProductClick(product)}
                           src={product.productImage[0]}
@@ -188,29 +190,21 @@ const SubCategory = () => {
                         </p>
                       )}
                     </div>
-                    {product.quantityOptions &&
-                      product.quantityOptions.length > 0 && (
-                        <div className="flex items-center gap-2 mt-2">
-                          <select
-                            value={
-                              selectedQuantities[product._id] ||
-                              product.quantityOptions[0].quantity
-                            }
-                            onChange={(e) => handleQuantityChange(product, e)}
-                            className="border rounded px-2 py-1"
-                          >
-                            {product.quantityOptions.map((option) => (
-                              <option
-                                key={option.quantity}
-                                value={option.quantity}
-                              >
-                                {option.quantity} -{' '}
-                                {displayINRCurrency(option.price)}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      )}
+                    {product.quantityOptions && product.quantityOptions.length > 0 && (
+                      <div className="flex items-center gap-2 mt-2">
+                        <select
+                          value={selectedQuantities[product._id] || product.quantityOptions[0].quantity}
+                          onChange={(e) => handleQuantityChange(product, e)}
+                          className="border rounded px-2 py-1"
+                        >
+                          {product.quantityOptions.map((option) => (
+                            <option key={option.quantity} value={option.quantity}>
+                              {option.quantity} - {displayINRCurrency(option.price)}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
                     <div className="flex items-center gap-2 mt-2">
                       <button
                         className="flex-grow text-sm border border-green-600 rounded px-2 py-1 text-green-600 font-medium hover:bg-green-600 hover:text-white transition-all"
@@ -222,10 +216,7 @@ const SubCategory = () => {
                         className="flex-grow text-sm border border-green-600 rounded px-2 py-1 flex items-center justify-center bg-green-600 text-white hover:text-green-600 hover:bg-white transition-all"
                         onClick={(e) => handleAddToCart(product._id, e)}
                       >
-                        <FontAwesomeIcon
-                          icon={faShoppingCart}
-                          className="mr-1"
-                        />
+                        <FontAwesomeIcon icon={faShoppingCart} className="mr-1" />
                       </button>
                     </div>
                   </div>
@@ -242,3 +233,4 @@ const SubCategory = () => {
 };
 
 export default SubCategory;
+
