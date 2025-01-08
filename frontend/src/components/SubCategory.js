@@ -106,7 +106,7 @@ const SubCategory = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="p-4 flex flex-col min-h-screen">
+    <div className="p-4 min-h-screen flex flex-col">
       <h2 className="text-lg font-semibold">{categoryName}</h2>
 
       {!selectedSubcategory && (
@@ -228,9 +228,14 @@ const SubCategory = () => {
           )}
         </div>
       )}
+
+      <footer className="bg-gray-800 text-white text-center py-4 mt-auto">
+        <p>© 2025 Siva Stores. All rights reserved.</p>
+      </footer>
     </div>
   );
 };
 
 export default SubCategory;
+
 
