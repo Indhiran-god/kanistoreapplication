@@ -1,3 +1,6 @@
+FRONTEND_URL=
+MONGODB_URI= mongodb+srv://indhiran736:IndhiranThunder_God12345@mern.uvd63.mongodb.net/MERN-Ecommerce?retryWrites=true&w=majority&appName=MERN
+TOKEN_SECRET_KEY= QWERTYUIOASDFGHJKLMNBVCXZASDFGHJK
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -50,7 +53,7 @@ const Categ = () => {
   }, []);
 
   const handleCategoryClick = (categoryName) => {
-    navigate(`/category/${categoryName}`);
+    navigate(`/`);
   };
 
   if (loading) {
@@ -73,7 +76,7 @@ const Categ = () => {
             />
           </div>
         )}
-        <span>Offers</span>
+        <span></span>
       </div>
 
       {/* Categories Grid */}
