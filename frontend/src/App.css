@@ -1,3 +1,35 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+.content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.footer {
+  background: #f8f9fa;
+  padding: 16px;
+  text-align: center;
+}
+
+
 .customShadow{
     box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
 }
