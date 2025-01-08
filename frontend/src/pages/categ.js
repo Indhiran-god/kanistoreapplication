@@ -53,7 +53,7 @@ const Categ = () => {
   }, []);
 
   const handleCategoryClick = (categoryName) => {
-    navigate(`/`);
+    navigate(``);
   };
 
   if (loading) {
