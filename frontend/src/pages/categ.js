@@ -59,7 +59,7 @@ const Categ = () => {
     <div className="p-4 pb-16">
       <div
         className="w-full bg-yellow-300 text-center py-4 text-2xl font-bold rounded-md mb-6 cursor-pointer flex flex-col items-center"
-        onClick={() => handleCategoryClick('Offers')}
+       
       >
         {offersImage && (
           <div className="w-24 h-16 mb-2 overflow-hidden">
@@ -70,7 +70,7 @@ const Categ = () => {
             />
           </div>
         )}
-        <span>Offers</span>
+        <span></span>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
