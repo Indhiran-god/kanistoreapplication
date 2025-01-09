@@ -26,16 +26,14 @@ const Categ = () => {
             return a.name.localeCompare(b.name);
           });
 
-          // Set Offers Image if available
           const offersCategory = sortedCategories.find(
             (category) => category.name === 'Offers'
           );
           if (offersCategory && offersCategory.categoryImage?.length > 0) {
-            setOffersImage(offersCategory.categoryImage[0]); // Get the first image
+            setOffersImage(offersCategory.categoryImage[0]);
           }
 
           setCategories(sortedCategories);
-          console.log('Categories:', sortedCategories);
         } else {
           setCategories([]);
         }
@@ -50,7 +48,7 @@ const Categ = () => {
   }, []);
 
   const handleCategoryClick = (categoryName) => {
-    navigate(`/sub`, { state: { categoryName });
+    navigate(`/category/${categoryName}`);
   };
 
   if (loading) {
@@ -59,7 +57,6 @@ const Categ = () => {
 
   return (
     <div className="p-4 pb-16">
-      {/* Highlighted Offers Section */}
       <div
         className="w-full bg-yellow-300 text-center py-4 text-2xl font-bold rounded-md mb-6 cursor-pointer flex flex-col items-center"
         onClick={() => handleCategoryClick('Offers')}
@@ -73,14 +70,13 @@ const Categ = () => {
             />
           </div>
         )}
-        <span></span>
+        <span>Offers</span>
       </div>
 
-      {/* Categories Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {categories.length > 0 ? (
           categories
-            .filter((category) => category.name !== 'Offers') // Exclude Offers from the grid
+            .filter((category) => category.name !== 'Offers')
             .map((category) => (
               <div
                 key={category._id}
@@ -122,7 +118,6 @@ const Categ = () => {
   );
 };
 
-// Helper function to determine grid layout based on the number of images
 const getGridClasses = (imageCount) => {
   switch (imageCount) {
     case 1:
