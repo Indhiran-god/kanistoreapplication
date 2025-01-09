@@ -50,7 +50,7 @@ const Categ = () => {
   }, []);
 
   const handleCategoryClick = (categoryName) => {
-    navigate(`/sub`);
+    navigate(`/sub`, { state: { categoryName });
   };
 
   if (loading) {
